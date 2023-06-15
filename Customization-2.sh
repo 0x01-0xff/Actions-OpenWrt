@@ -11,7 +11,7 @@ architecture
 sed -i 's/256/1024/g' target/linux/x86/image/Makefile
 
 # 修改 root 密码
-sed -i 's/root:::0:99999:7:::/root:$1$PaaZ9jjP$tvTgcLR4tQtpbDV2cTmkB0::0:99999:7:::/g' package/base-files/file/etc/shadow
+sed -i 's/root:::0:99999:7:::/root:$1$PaaZ9jjP$tvTgcLR4tQtpbDV2cTmkB0::0:99999:7:::/g' package/base-files/files/etc/shadow
 
 # 修改 IP 及时区
 sed -i 's/192.168./10.10./g' package/base-files/files/bin/config_generate
