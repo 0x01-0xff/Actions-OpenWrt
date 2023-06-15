@@ -21,7 +21,6 @@ on:
 env:
   REPO_URL: https://github.com/openwrt/openwrt
   REPO_BRANCH: openwrt-23.05
-  MAIN_DIR: workhome
   CUR_OP_DIR: openwrt_x86
   INSET_FILES_DIR: InsetFiles
   GET_ARCH: amd64
@@ -54,15 +53,15 @@ jobs:
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
-        sudo mkdir -p /$MAIN_DIR
-        sudo chown $USER:$GROUPS /$MAIN_DIR
+        sudo mkdir -p /workhome
+        sudo chown $USER:$GROUPS /workhome
 
     - name: Clone source code
-      working-directory: /$MAIN_DIR
+      working-directory: /workhome
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH $CUR_OP_DIR
-        ln -sf /$MAIN_DIR/$CUR_OP_DIR $GITHUB_WORKSPACE/$CUR_OP_DIR
+        ln -sf /workhome/$CUR_OP_DIR $GITHUB_WORKSPACE/$CUR_OP_DIR
 
     - name: Load custom feeds
       run: |
