@@ -20,7 +20,7 @@ on:
 
 env:
   REPO_URL: https://github.com/openwrt/openwrt
-  REPO_BRANCH: openwrt-22.03
+  REPO_BRANCH: openwrt-22.03.5
   CUR_OP_DIR: openwrt
   INSET_FILES_DIR: InsetFiles
   GET_ARCH: amd64
@@ -63,7 +63,11 @@ jobs:
     - name: Clone source code
       working-directory: /workhome
       run: |
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
         df -hT $PWD
+        echo "======================="
         git clone $REPO_URL -b $REPO_BRANCH $CUR_OP_DIR
         ln -sf /workhome/$CUR_OP_DIR $GITHUB_WORKSPACE/$CUR_OP_DIR
 
@@ -94,7 +98,11 @@ jobs:
     - name: Download package
       id: package
       run: |
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
         df -hT $PWD
+        echo "======================="
         cd $CUR_OP_DIR
         make defconfig
         make download -j8
@@ -112,7 +120,11 @@ jobs:
     - name: Compile the firmware
       id: compile
       run: |
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
         df -hT $PWD
+        echo "======================="
         cd $CUR_OP_DIR
         echo -e "$(nproc) thread compile"
         make -j$(nproc) || make -j1 || make -j1 V=s
@@ -124,10 +136,14 @@ jobs:
     - name: Check space usage
       if: (!cancelled())
       run: |
-        cd $CUR_OP_DIR
-        rm -rf dl
-        echo "Directory \"dl\" deleted."
+#        cd $CUR_OP_DIR
+#        rm -rf dl
+#        echo "Directory \"dl\" deleted."
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
         df -hT
+        echo "======================="
 
     - name: Upload bin directory
       uses: actions/upload-artifact@v3
