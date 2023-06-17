@@ -20,7 +20,8 @@ on:
 
 env:
   REPO_URL: https://github.com/openwrt/openwrt
-  REPO_BRANCH: openwrt-22.03.5
+  REPO_BRANCH: main
+  REPO_TAG: v22.03.5
   CUR_OP_DIR: openwrt
   INSET_FILES_DIR: InsetFiles
   GET_ARCH: amd64
