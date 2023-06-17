@@ -52,7 +52,8 @@ cp $INSET_FILES_DIR/openclash_config_h.ini files/www/openclash_config_h.ini
 cp $INSET_FILES_DIR/GoogleALL.list files/etc/subconverter/rules/GoogleALL.list
 cp $INSET_FILES_DIR/OpenAi.list files/etc/subconverter/rules/OpenAi.list
 cp $INSET_FILES_DIR/PayPal.list files/etc/subconverter/rules/PayPal.list
-sed -i '2i Huson规则,config_h.ini,http:\/\/127.0.0.1\/openclash_config_h.ini\nHuson远程规则,remote_config_h.ini,https:\/\/raw.githubusercontent.com\/0x01-0xff\/ProxyProfiles\/master\/Clash\/remote_config_h.ini' feeds/openclash/luci-app-openclash/root/usr/share/openclash/res/sub_ini.list
+h_RULES_CON=$(sed -n 2p feeds/openclash/luci-app-openclash/root/usr/share/openclash/res/sub_ini.list 2>/dev/null)
+[ ! ${h_RULES_CON: 0: 5} == "Huson" ] && sed -i '2i Huson规则,config_h.ini,http:\/\/127.0.0.1\/openclash_config_h.ini\nHuson远程规则,remote_config_h.ini,https:\/\/raw.githubusercontent.com\/0x01-0xff\/ProxyProfiles\/master\/Clash\/remote_config_h.ini' feeds/openclash/luci-app-openclash/root/usr/share/openclash/res/sub_ini.list
 
 # 植入 OpenClash Core
 echo ">> Inset openclash core"
