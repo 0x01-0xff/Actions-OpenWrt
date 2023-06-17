@@ -136,9 +136,6 @@ jobs:
     - name: Check space usage
       if: (!cancelled())
       run: |
-#        cd $CUR_OP_DIR
-#        rm -rf dl
-#        echo "Directory \"dl\" deleted."
         echo "======================="
         echo "Space usage:"
         echo "======================="
