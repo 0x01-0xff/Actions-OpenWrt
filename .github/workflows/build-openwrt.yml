@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2023-06-18
+# 2023-06-19
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -28,8 +28,8 @@ env:
   SYS_BASE_PARAM: Basic-Parameters.sh
   ADD_FEEDS_CONF: Add-Feeds-Conf.sh
   MOD_APP_CONF: Modify-APP-Conf.sh
-  UPLOAD_BIN_DIR: false
-  UPLOAD_FIRMWARE: true
+  UPLOAD_BIN_DIR: true
+  UPLOAD_FIRMWARE: false
   UPLOAD_COWTRANSFER: false
   UPLOAD_WETRANSFER: false
   UPLOAD_RELEASE: false
