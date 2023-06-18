@@ -1,10 +1,8 @@
 #
 # By Huson
-# 2023-06-17
+# 2023-06-18
 #
 # Description: Build OpenWrt using GitHub Actions
-#
-# X86
 #
 
 name: Build OpenWrt x86
@@ -19,8 +17,8 @@ on:
         default: 'false'
 
 env:
-  REPO_URL: https://github.com/openwrt/openwrt
-  REPO_BRANCH: main
+  REPO_URL: https://git.openwrt.org/openwrt/openwrt.git
+  REPO_BRANCH: -a
   REPO_TAG: v22.03.5
   CUR_OP_DIR: openwrt
   INSET_FILES_DIR: InsetFiles
@@ -69,8 +67,11 @@ jobs:
         echo "======================="
         df -hT $PWD
         echo "======================="
-        git clone $REPO_URL -b $REPO_BRANCH $CUR_OP_DIR
+        git clone $REPO_URL $CUR_OP_DIR
         ln -sf /workhome/$CUR_OP_DIR $GITHUB_WORKSPACE/$CUR_OP_DIR
+        cd $CUR_OP_DIR
+        git branch $REPO_BRANCH
+        git checkout $REPO_TAG
 
     - name: Load custom feeds
       run: |
