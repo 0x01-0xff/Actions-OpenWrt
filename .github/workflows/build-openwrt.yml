@@ -22,14 +22,15 @@ env:
   REPO_TAG: v22.03.5
   CUR_OP_DIR: openwrt
   INSET_FILES_DIR: InsetFiles
+  MY_WORK_HOME: workhome
   GET_ARCH: amd64
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: h_x86.config
   SYS_BASE_PARAM: Basic-Parameters.sh
   ADD_FEEDS_CONF: Add-Feeds-Conf.sh
   MOD_APP_CONF: Modify-APP-Conf.sh
-  UPLOAD_BIN_DIR: false
-  UPLOAD_FIRMWARE: true
+  UPLOAD_BIN_DIR: true
+  UPLOAD_FIRMWARE: false
   UPLOAD_COWTRANSFER: false
   UPLOAD_WETRANSFER: false
   UPLOAD_RELEASE: false
@@ -57,11 +58,11 @@ jobs:
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
-        sudo mkdir -p /workhome
-        sudo chown $USER:$GROUPS /workhome
+        sudo mkdir -p /${MY_WORK_HOME}
+        sudo chown ${USER}:${GROUPS} /${MY_WORK_HOME}
 
     - name: Clone source code
-      working-directory: /workhome
+      working-directory: /${{ env.MY_WORK_HOME }}
       run: |
         echo "======================="
         echo "Space usage:"
@@ -69,7 +70,7 @@ jobs:
         df -hT $PWD
         echo "======================="
         git clone $REPO_URL $CUR_OP_DIR
-        ln -sf /workhome/$CUR_OP_DIR $GITHUB_WORKSPACE/$CUR_OP_DIR
+        ln -sf /${MY_WORK_HOME}/${CUR_OP_DIR} ${GITHUB_WORKSPACE}/${CUR_OP_DIR}
         cd $CUR_OP_DIR
         git branch $REPO_BRANCH
         git checkout $REPO_TAG
@@ -78,32 +79,32 @@ jobs:
       run: |
         chmod +x $SYS_BASE_PARAM
         cd $CUR_OP_DIR
-        $GITHUB_WORKSPACE/$SYS_BASE_PARAM
+        ${GITHUB_WORKSPACE}/${SYS_BASE_PARAM}
 
     - name: Load custom feeds
       run: |
-        [ -e $FEEDS_CONF ] && cp $FEEDS_CONF $CUR_OP_DIR/feeds.conf.default
+        [ -e $FEEDS_CONF ] && cp $FEEDS_CONF ${CUR_OP_DIR}/feeds.conf.default
         chmod +x $ADD_FEEDS_CONF
         cd $CUR_OP_DIR
-        $GITHUB_WORKSPACE/$ADD_FEEDS_CONF
+        ${GITHUB_WORKSPACE}/${ADD_FEEDS_CONF}
 
     - name: Update feeds
       run: cd $CUR_OP_DIR && ./scripts/feeds update -a
 
     - name: Load custom modify
       run: |
-        [ -e files ] && cp -r files $CUR_OP_DIR/files
-        [ -e $INSET_FILES_DIR ] && cp -r $INSET_FILES_DIR $CUR_OP_DIR/$INSET_FILES_DIR
+        [ -e files ] && cp -r files ${CUR_OP_DIR}/files
+        [ -e $INSET_FILES_DIR ] && cp -r $INSET_FILES_DIR ${CUR_OP_DIR}/${INSET_FILES_DIR}
         chmod +x $MOD_APP_CONF
         cd $CUR_OP_DIR
-        $GITHUB_WORKSPACE/$MOD_APP_CONF $INSET_FILES_DIR $GET_ARCH
+        ${GITHUB_WORKSPACE}/${MOD_APP_CONF} $INSET_FILES_DIR $GET_ARCH
 
     - name: Install feeds
       run: cd $CUR_OP_DIR && ./scripts/feeds install -a
 
     - name: Load .config
       run: |
-        [ -e $CONFIG_FILE ] && cp $CONFIG_FILE $CUR_OP_DIR/.config
+        [ -e $CONFIG_FILE ] && cp $CONFIG_FILE ${CUR_OP_DIR}/.config
 
     - name: SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
@@ -156,13 +157,13 @@ jobs:
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
         name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-        path: $CUR_OP_DIR/bin
+        path: ${{ env.CUR_OP_DIR }}/bin
 
     - name: Organize files
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
-        cd $CUR_OP_DIR/bin/targets/*/*
+        cd ${CUR_OP_DIR}/bin/targets/*/*
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
