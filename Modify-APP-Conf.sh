@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-06-19
+# 2023-06-20
 #
 # Modify APP Config
 #
@@ -9,7 +9,7 @@ INSET_FILES_DIR=$1
 GET_ARCH=$2
 
 echo ">> Create directory"
-mkdir -p files/root files/www files/etc/subconverter/rules files/usr/share/v2ray
+mkdir -p files/root files/etc/subconverter/rules files/usr/share/v2ray
 
 echo ">> Inset initialization script"
 #curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://raw.githubusercontent.com/0x01-0xff/OP_Files/master/set_op.sh -o files/root/set_op.sh 2>&1
@@ -29,7 +29,7 @@ echo ">> Inset geosite.dat/geoip.dat"
 curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -o files/usr/share/v2ray/geosite_extra.dat 2>&1
 curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o files/usr/share/v2ray/geoip_extra.dat 2>&1
 
-echo ">> Inset subconverter server and openclash rules"
+echo ">> Inset openclash rules and convert server"
 h_SUB_SERVER=$(grep -B1 '^o:value("https:\/\/api.dler.io\/sub"' feeds/openclash/luci-app-openclash/luasrc/model/cbi/openclash/config-subscribe-edit.lua | sed -n 1p 2>/dev/null)
 h_SUB_SERVER=${h_SUB_SERVER: 17: 9}
 if [ ! "$h_SUB_SERVER" == "127.0.0.1" ]; then
@@ -42,7 +42,8 @@ h_RULES_CON=$(sed -n 2p feeds/openclash/luci-app-openclash/root/usr/share/opencl
 #curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://raw.githubusercontent.com/0x01-0xff/OP_Files/master/GoogleALL.list -o files/etc/subconverter/rules/GoogleALL.list 2>&1
 #curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://raw.githubusercontent.com/0x01-0xff/OP_Files/master/OpenAi.list -o files/etc/subconverter/rules/OpenAi.list 2>&1
 #curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://raw.githubusercontent.com/0x01-0xff/OP_Files/master/PayPal.list -o files/etc/subconverter/rules/PayPal.list 2>&1
-cp $INSET_FILES_DIR/openclash_config_h.ini files/www/openclash_config_h.ini
+#cp $INSET_FILES_DIR/openclash_config_h.ini files/www/openclash_config_h.ini
+cp $INSET_FILES_DIR/openclash_config_h.ini feeds/openclash/luci-app-openclash/root/www/openclash_config_h.ini
 cp $INSET_FILES_DIR/GoogleALL.list files/etc/subconverter/rules/GoogleALL.list
 cp $INSET_FILES_DIR/OpenAi.list files/etc/subconverter/rules/OpenAi.list
 cp $INSET_FILES_DIR/PayPal.list files/etc/subconverter/rules/PayPal.list
