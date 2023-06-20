@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-06-20
+# 2023-06-20 12:49
 #
 # Modify APP Config
 #
@@ -9,7 +9,7 @@ INSET_FILES_DIR=$1
 GET_ARCH=$2
 
 echo ">> Create directory"
-mkdir -p files/root files/etc/subconverter/rules files/usr/share/v2ray
+mkdir -p files/root files/etc/subconverter/rules
 
 echo ">> Inset initialization script"
 #curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://raw.githubusercontent.com/0x01-0xff/OP_Files/master/set_op.sh -o files/root/set_op.sh 2>&1
@@ -25,9 +25,10 @@ sed -i '/^config nodes/,$d' feeds/passwall2/luci-app-passwall2/root/usr/share/pa
 cat $INSET_FILES_DIR/pw_xray_config >> feeds/passwall_luci/luci-app-passwall/root/usr/share/passwall/0_default_config
 cat $INSET_FILES_DIR/pw_xray_config >> feeds/passwall2/luci-app-passwall2/root/usr/share/passwall2/0_default_config
 
-echo ">> Inset geosite.dat/geoip.dat"
-curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -o files/usr/share/v2ray/geosite_extra.dat 2>&1
-curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o files/usr/share/v2ray/geoip_extra.dat 2>&1
+echo ">> Inset extra geosite.dat/geoip.dat to passwall"
+mkdir -p feeds/passwall_luci/luci-app-passwall/root/usr/share/passwall/v2ray
+curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -o feeds/passwall_luci/luci-app-passwall/root/usr/share/passwall/v2ray/geosite_extra.dat 2>&1
+curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o feeds/passwall_luci/luci-app-passwall/root/usr/share/passwall/v2ray/geoip_extra.dat 2>&1
 
 echo ">> Inset openclash rules and convert server"
 h_SUB_SERVER=$(grep -B1 '^o:value("https:\/\/api.dler.io\/sub"' feeds/openclash/luci-app-openclash/luasrc/model/cbi/openclash/config-subscribe-edit.lua | sed -n 1p 2>/dev/null)
