@@ -1,12 +1,21 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-06-20 12:49
+# 2023-06-21 15:07
 #
 # Modify APP Config
 #
 INSET_FILES_DIR=$1
 GET_ARCH=$2
+
+echo ">> Remove the old native packages"
+[ -e feeds/packages/net/haproxy ] && rm -rf feeds/packages/net/haproxy
+[ -e feeds/packages/net/shadowsocks-libev ] && rm -rf feeds/packages/net/shadowsocks-libev
+[ -e feeds/packages/net/trojan-go ] && rm -rf feeds/packages/net/trojan-go
+[ -e feeds/packages/net/v2ray-core ] && rm -rf feeds/packages/net/v2ray-core
+[ -e feeds/packages/net/v2raya ] && rm -rf feeds/packages/net/v2raya
+[ -e feeds/packages/net/v2ray-geodata ] && rm -rf feeds/packages/net/v2ray-geodata
+[ -e feeds/packages/net/xray-core ] && rm -rf feeds/packages/net/xray-core
 
 echo ">> Create directory"
 mkdir -p files/root files/etc/subconverter/rules
