@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2023-06-19
+# 2023-06-21 13:09
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -29,6 +29,7 @@ env:
   SYS_BASE_PARAM: Basic-Parameters.sh
   ADD_FEEDS_CONF: Add-Feeds-Conf.sh
   MOD_APP_CONF: Modify-APP-Conf.sh
+  OLD_NATIVE_PKG: rm-Old-Packages.sh
   UPLOAD_BIN_DIR: true
   UPLOAD_FIRMWARE: false
   UPLOAD_COWTRANSFER: false
@@ -101,6 +102,12 @@ jobs:
 
     - name: Install feeds
       run: cd $CUR_OP_DIR && ./scripts/feeds install -a
+
+    - name: Remove the old native packages
+      run: 
+        chmod +x $OLD_NATIVE_PKG
+        cd $CUR_OP_DIR
+        ${GITHUB_WORKSPACE}/${OLD_NATIVE_PKG}
 
     - name: Load .config
       run: |
