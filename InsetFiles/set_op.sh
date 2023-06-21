@@ -1,7 +1,7 @@
 #!/bin/sh
 _settingType="$1"
 # Openwrt Setting Script Base on v22.03.5 x86_64
-# Huson 2023-06-06
+# Huson 2023-06-21
 # IP Assign: MainRouter:1, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:100-199
 # Bypass Main Network: MainRouter:1, ViceRouter:2, VM:3, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:10.0.1.11-254
 # USE: # sh set_op.sh [normal/bypass]
@@ -89,18 +89,12 @@ comparisonProtMac() {
 	done
 }
 set_system_info() {
-	/etc/init.d/https-dns-proxy stop
-	/etc/init.d/https-dns-proxy disable
-	/etc/init.d/frpc stop
-	/etc/init.d/frpc disable
-	/etc/init.d/frps stop
-	/etc/init.d/frps disable
-	/etc/init.d/banip stop
-	/etc/init.d/banip disable
-	/etc/init.d/ddns stop
-	/etc/init.d/ddns disable
-	/etc/init.d/pbr stop
-	/etc/init.d/pbr disable
+	if [ -f /etc/init.d/banip ]; then /etc/init.d/banip stop && /etc/init.d/banip disable; fi
+	if [ -f /etc/init.d/ddns ]; then /etc/init.d/ddns stop && /etc/init.d/ddns disable; fi
+	if [ -f /etc/init.d/frpc ]; then /etc/init.d/frpc stop && /etc/init.d/frpc disable; fi
+	if [ -f /etc/init.d/frps ]; then /etc/init.d/frps stop && /etc/init.d/frps disable; fi
+	if [ -f /etc/init.d/https-dns-proxy ]; then /etc/init.d/https-dns-proxy stop && /etc/init.d/https-dns-proxy disable; fi
+	if [ -f /etc/init.d/pbr ]; then /etc/init.d/pbr stop && /etc/init.d/pbr disable; fi
 	uci set system.@system[0].hostname=${Host_Name}
 	uci set system.@system[0].zonename=${Zone_Name}
 	uci set system.@system[0].timezone=${Time_Zone}
