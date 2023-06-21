@@ -1,21 +1,21 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-06-21 15:07
+# 2023-06-21 21:43
 #
 # Modify APP Config
 #
 INSET_FILES_DIR=$1
 GET_ARCH=$2
 
-echo ">> Remove the old native packages"
-[ -e feeds/packages/net/haproxy ] && rm -rf feeds/packages/net/haproxy
-[ -e feeds/packages/net/shadowsocks-libev ] && rm -rf feeds/packages/net/shadowsocks-libev
-[ -e feeds/packages/net/trojan-go ] && rm -rf feeds/packages/net/trojan-go
-[ -e feeds/packages/net/v2ray-core ] && rm -rf feeds/packages/net/v2ray-core
-[ -e feeds/packages/net/v2raya ] && rm -rf feeds/packages/net/v2raya
-[ -e feeds/packages/net/v2ray-geodata ] && rm -rf feeds/packages/net/v2ray-geodata
-[ -e feeds/packages/net/xray-core ] && rm -rf feeds/packages/net/xray-core
+echo ">> Replace the old native packages"
+#[ -e feeds/packages/net/haproxy ] && rm -rf feeds/packages/net/haproxy
+#[ -e feeds/packages/net/shadowsocks-libev ] && rm -rf feeds/packages/net/shadowsocks-libev
+#[ -e feeds/packages/net/v2raya ] && rm -rf feeds/packages/net/v2raya
+if [ -e feeds/packages/net/trojan-go ]; then rm -rf feeds/packages/net/trojan-go; cp -rf feeds/passwall/trojan-go feeds/packages/net/trojan-go; fi
+if [ -e feeds/packages/net/v2ray-core ]; then rm -rf feeds/packages/net/v2ray-core; cp -rf feeds/passwall/v2ray-core feeds/packages/net/v2ray-core; fi
+if [ -e feeds/packages/net/v2ray-geodata ]; then rm -rf feeds/packages/net/v2ray-geodata; cp -rf feeds/passwall/v2ray-geodata feeds/packages/net/v2ray-geodata; fi
+if [ -e feeds/packages/net/xray-core ]; then rm -rf feeds/packages/net/xray-core; cp -rf feeds/passwall/xray-core feeds/packages/net/xray-core; fi
 
 echo ">> Create directory"
 mkdir -p files/root files/etc/subconverter/rules
