@@ -104,7 +104,7 @@ jobs:
       run: cd $CUR_OP_DIR && ./scripts/feeds install -a
 
     - name: Remove the old native packages
-      run: 
+      run: |
         chmod +x $OLD_NATIVE_PKG
         cd $CUR_OP_DIR
         ${GITHUB_WORKSPACE}/${OLD_NATIVE_PKG}
