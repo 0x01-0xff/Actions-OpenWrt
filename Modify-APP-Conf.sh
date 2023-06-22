@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-06-21 21:43
+# 2023-06-23 00:57
 #
 # Modify APP Config
 #
@@ -17,12 +17,11 @@ if [ -e feeds/packages/net/v2ray-core ]; then rm -rf feeds/packages/net/v2ray-co
 if [ -e feeds/packages/net/v2ray-geodata ]; then rm -rf feeds/packages/net/v2ray-geodata; cp -rf feeds/passwall/v2ray-geodata feeds/packages/net/v2ray-geodata; fi
 if [ -e feeds/packages/net/xray-core ]; then rm -rf feeds/packages/net/xray-core; cp -rf feeds/passwall/xray-core feeds/packages/net/xray-core; fi
 
-echo ">> Create directory"
-mkdir -p files/root files/etc/subconverter/rules
-
 echo ">> Inset initialization script"
+mkdir -p files/root
 #curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://raw.githubusercontent.com/0x01-0xff/OP_Files/master/set_op.sh -o files/root/set_op.sh 2>&1
 cp $INSET_FILES_DIR/set_op.sh files/root/set_op.sh
+chmod 4755 files/root/set_op.sh
 
 echo ">> Modify passwall rules"
 #curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://raw.githubusercontent.com/0x01-0xff/OP_Files/master/passwall_0_default_config -o files/usr/share/passwall/0_default_config 2>&1
@@ -34,10 +33,10 @@ sed -i '/^config nodes/,$d' feeds/passwall2/luci-app-passwall2/root/usr/share/pa
 cat $INSET_FILES_DIR/pw_xray_config >> feeds/passwall_luci/luci-app-passwall/root/usr/share/passwall/0_default_config
 cat $INSET_FILES_DIR/pw_xray_config >> feeds/passwall2/luci-app-passwall2/root/usr/share/passwall2/0_default_config
 
-echo ">> Inset extra geosite.dat/geoip.dat to passwall"
-mkdir -p feeds/passwall_luci/luci-app-passwall/root/usr/share/passwall/v2ray
-curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -o feeds/passwall_luci/luci-app-passwall/root/usr/share/passwall/v2ray/geosite_extra.dat 2>&1
-curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o feeds/passwall_luci/luci-app-passwall/root/usr/share/passwall/v2ray/geoip_extra.dat 2>&1
+echo ">> Inset extra geosite.dat/geoip.dat to passwall2"
+mkdir -p feeds/passwall2/luci-app-passwall2/root/usr/share/v2ray
+curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -o feeds/passwall2/luci-app-passwall2/root/usr/share/v2ray/geosite_extra.dat 2>&1
+curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o feeds/passwall2/luci-app-passwall2/root/usr/share/v2ray/geoip_extra.dat 2>&1
 
 echo ">> Inset openclash rules and convert server"
 h_SUB_SERVER=$(grep -B1 '^o:value("https:\/\/api.dler.io\/sub"' feeds/openclash/luci-app-openclash/luasrc/model/cbi/openclash/config-subscribe-edit.lua | sed -n 1p 2>/dev/null)
@@ -54,6 +53,7 @@ h_RULES_CON=$(sed -n 2p feeds/openclash/luci-app-openclash/root/usr/share/opencl
 #curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://raw.githubusercontent.com/0x01-0xff/OP_Files/master/PayPal.list -o files/etc/subconverter/rules/PayPal.list 2>&1
 #cp $INSET_FILES_DIR/openclash_config_h.ini files/www/openclash_config_h.ini
 cp $INSET_FILES_DIR/openclash_config_h.ini feeds/openclash/luci-app-openclash/root/www/openclash_config_h.ini
+mkdir -p files/etc/subconverter/rules
 cp $INSET_FILES_DIR/GoogleALL.list files/etc/subconverter/rules/GoogleALL.list
 cp $INSET_FILES_DIR/OpenAi.list files/etc/subconverter/rules/OpenAi.list
 cp $INSET_FILES_DIR/PayPal.list files/etc/subconverter/rules/PayPal.list
@@ -82,8 +82,6 @@ rm -rf feeds/openclash/luci-app-openclash/root/etc/openclash/core/clash-linux-$G
 [ -e feeds/openclash/luci-app-openclash/root/etc/openclash/core/clash ] && echo "clash done."
 chmod -R 4755 feeds/openclash/luci-app-openclash/root/etc/openclash/core
 
-echo ">> Set permissions"
+echo ">> CleanUp"
 rm -rf $INSET_FILES_DIR >/dev/null 2>&1
-chmod -R 4755 files
-#chmod 664 files/usr/share/passwall/0_default_config
-#chmod 664 files/usr/share/passwall2/0_default_config
+
