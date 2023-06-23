@@ -1,7 +1,7 @@
 #!/bin/sh
 _settingType="$1"
 # Openwrt Setting Script Base on v22.03.5 x86_64
-# Huson 2023-06-21
+# Huson 2023-06-24 00:40
 # IP Assign: MainRouter:1, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:100-199
 # Bypass Main Network: MainRouter:1, ViceRouter:2, VM:3, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:10.0.1.11-254
 # USE: # sh set_op.sh [normal/bypass]
@@ -19,6 +19,7 @@ Zone_Name="Asia/Shanghai"
 Time_Zone="CST-8"
 Router_Domain="router.hs"
 Vice_Router_Domain="vicerouter.hs"
+if [ "$_settingType" == "bypass" ]; then Host_Name="$Host_Name_Bypass"; fi
 
 #******# Router MAC Address
 Mac_Port1="00:90:27:E2:33:00"; Mac_Port2="00:90:27:E2:33:00"; Mac_Port3="00:90:27:E2:33:00"; Mac_Port4="00:90:27:E2:33:00"
@@ -89,17 +90,19 @@ comparisonProtMac() {
 	done
 }
 set_system_info() {
+	uci set system.@system[0].hostname=${Host_Name}
+	uci set system.@system[0].zonename=${Zone_Name}
+	uci set system.@system[0].timezone=${Time_Zone}
+	uci commit system
+	_green "[System]: Set Router Name to ${Host_Name}, Time-zone ${Time_Zone}\n"
+}
+disable_service() {
 	if [ -f /etc/init.d/banip ]; then /etc/init.d/banip stop && /etc/init.d/banip disable; fi
 	if [ -f /etc/init.d/ddns ]; then /etc/init.d/ddns stop && /etc/init.d/ddns disable; fi
 	if [ -f /etc/init.d/frpc ]; then /etc/init.d/frpc stop && /etc/init.d/frpc disable; fi
 	if [ -f /etc/init.d/frps ]; then /etc/init.d/frps stop && /etc/init.d/frps disable; fi
 	if [ -f /etc/init.d/https-dns-proxy ]; then /etc/init.d/https-dns-proxy stop && /etc/init.d/https-dns-proxy disable; fi
 	if [ -f /etc/init.d/pbr ]; then /etc/init.d/pbr stop && /etc/init.d/pbr disable; fi
-	uci set system.@system[0].hostname=${Host_Name}
-	uci set system.@system[0].zonename=${Zone_Name}
-	uci set system.@system[0].timezone=${Time_Zone}
-	uci commit system
-	_green "[System]: Set Router Name to ${Host_Name}, Time-zone ${Time_Zone}\n"
 }
 set_ssh_server() {
 	uci set dropbear.@dropbear[0].PasswordAuth=on
@@ -415,6 +418,21 @@ bypass_bind_router_domain() {
 	_green "[Binded]: Vice-Router Domain: $Vice_Router_Domain\n"
 	uci commit dhcp
 }
+set_adblock_sources_list() {
+	local _workTrigger="$1"
+	if [ -f /etc/init.d/adblock ]; then
+		uci set adblock.global.adb_enabled=1
+		uci set adblock.global.adb_trigger=${_workTrigger}
+		uci set adblock.global.adb_sources=''
+#		uci set adblock.global.adb_sources="adaway adguard easylist reg_cn reg_es reg_jp reg_ru yoyo"
+		for i in adaway adguard easylist reg_cn reg_es reg_jp reg_ru yoyo; do
+			uci add_list adblock.global.adb_sources=$i
+		done
+		_green "[Adblock]: Sources Lists Done, Trigger: ${_workTrigger}\n"
+		uci commit adblock
+		/etc/init.d/adblock restart
+	fi
+}
 ###############################################################################
 ##                                FUNCTION END                               ##
 ###############################################################################
@@ -425,21 +443,24 @@ case "$_settingType" in
 		comparisonProtMac "Wan"
 		checkPackageInstalled "dnsmasq-full"
 		set_system_info
+		disable_service
 #		set_ssh_server
 		insert_network_interface
 		insert_firewall_interface
 		bind_ip_and_domain
+		set_adblock_sources_list "wan"
 		_greenH "Openwrt Normal Mode Setting Done.\nRebooting System...\n"
 		;;
 	bypass)
-		Host_Name="$Host_Name_Bypass"
 		checkPackageInstalled "dnsmasq-full"
 		set_system_info
+		disable_service
 #		set_ssh_server
 		insert_bypass_network_interface
 		bypass_disable_dhcp_server
 		bypass_firewall_interface
 		bypass_bind_router_domain
+		set_adblock_sources_list "lan"
 		_greenH "Openwrt Vice-Router Bypass Mode Setting Done.\nRebooting System...\n"
 		;;
 	*)
@@ -449,6 +470,10 @@ case "$_settingType" in
 		;;
 esac
 
+/etc/init.d/network restart
+/etc/init.d/odhcpd restart
+/etc/init.d/firewall restart
+sleep 10
 reboot
 exit 0
 ###############################################################################
