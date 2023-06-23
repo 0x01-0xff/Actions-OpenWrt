@@ -487,4 +487,3 @@ exit 0
 #/etc/init.d/firewall restart
 
 #ethtool -s eth0 [speed 10|100|1000] [duplex half|full] [autoneg on|off]
-
