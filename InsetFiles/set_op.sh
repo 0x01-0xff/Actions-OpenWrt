@@ -1,7 +1,7 @@
 #!/bin/sh
 _settingType="$1"
 # Openwrt Setting Script Base on v22.03.5 x86_64
-# Huson 2023-06-24 00:40
+# Huson 2023-06-24 09:34
 # IP Assign: MainRouter:1, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:100-199
 # Bypass Main Network: MainRouter:1, ViceRouter:2, VM:3, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:10.0.1.11-254
 # USE: # sh set_op.sh [normal/bypass]
@@ -420,12 +420,13 @@ bypass_bind_router_domain() {
 }
 set_adblock_sources_list() {
 	local _workTrigger="$1"
+	local _block_lists="adaway adguard easylist reg_cn reg_es reg_jp reg_ru yoyo"
 	if [ -f /etc/init.d/adblock ]; then
 		uci set adblock.global.adb_enabled=1
 		uci set adblock.global.adb_trigger=${_workTrigger}
 		uci set adblock.global.adb_sources=''
 #		uci set adblock.global.adb_sources="adaway adguard easylist reg_cn reg_es reg_jp reg_ru yoyo"
-		for i in adaway adguard easylist reg_cn reg_es reg_jp reg_ru yoyo; do
+		for i in ${_block_lists}; do
 			uci add_list adblock.global.adb_sources=$i
 		done
 		_green "[Adblock]: Sources Lists Done, Trigger: ${_workTrigger}\n"
@@ -487,3 +488,4 @@ exit 0
 #/etc/init.d/firewall restart
 
 #ethtool -s eth0 [speed 10|100|1000] [duplex half|full] [autoneg on|off]
+
