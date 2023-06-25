@@ -1,7 +1,7 @@
 #!/bin/sh
 _settingType="$1"
 # Openwrt Setting Script Base on v22.03.5 x86_64
-# Huson 2023-06-24 09:34
+# Huson 2023-06-25 14:52
 # IP Assign: MainRouter:1, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:100-199
 # Bypass Main Network: MainRouter:1, ViceRouter:2, VM:3, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:10.0.1.11-254
 # USE: # sh set_op.sh [normal/bypass]
@@ -431,7 +431,9 @@ set_adblock_sources_list() {
 		done
 		_green "[Adblock]: Sources Lists Done, Trigger: ${_workTrigger}\n"
 		uci commit adblock
-		/etc/init.d/adblock restart
+		_greenH "Restarting Adblock...\n"
+		/etc/init.d/adblock restart > /dev/null
+		sleep 3
 	fi
 }
 ###############################################################################
@@ -450,7 +452,7 @@ case "$_settingType" in
 		insert_firewall_interface
 		bind_ip_and_domain
 		set_adblock_sources_list "wan"
-		_greenH "Openwrt Normal Mode Setting Done.\nRebooting System...\n"
+		_greenH "Openwrt Normal Mode Setting Done.\n"
 		;;
 	bypass)
 		checkPackageInstalled "dnsmasq-full"
@@ -462,7 +464,7 @@ case "$_settingType" in
 		bypass_firewall_interface
 		bypass_bind_router_domain
 		set_adblock_sources_list "lan"
-		_greenH "Openwrt Vice-Router Bypass Mode Setting Done.\nRebooting System...\n"
+		_greenH "Openwrt Vice-Router Bypass Mode Setting Done.\n"
 		;;
 	*)
 		_yellow '\nPlease USE: "# sh set_op.sh [normal/bypass]"\n'
@@ -471,12 +473,20 @@ case "$_settingType" in
 		;;
 esac
 
-/etc/init.d/network restart
-/etc/init.d/odhcpd restart
-/etc/init.d/firewall restart
-sleep 10
+_greenH "Restarting DHCP...\n"
+/etc/init.d/odhcpd restart > /dev/null
+sleep 3
+_greenH "Restarting Firewall...\n"
+/etc/init.d/firewall restart > /dev/null
+sleep 3
+_greenH "Restarting Network...\n"
+/etc/init.d/network restart > /dev/null
+sleep 8
+_greenH "Rebooting System...\n"
+sleep 2
 reboot
 exit 0
+
 ###############################################################################
 ## vim /etc/config/network  /etc/init.d/network restart  passwd root
 #for i in `ls /sys/class/net | grep "eth"`; do echo "$i -> $(cat /sys/class/net/$i/address | tr '[a-z]' '[A-Z]')"; done
