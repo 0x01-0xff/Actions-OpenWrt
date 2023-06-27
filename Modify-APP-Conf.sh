@@ -13,8 +13,7 @@ REPLACE_NET_PACKAGE() {
     local _SRC_PACKAGE=$1
     for i in `ls feeds/${_SRC_PACKAGE}`; do
         if [ -e feeds/packages/net/${i} ]; then
-           rm -rf feeds/packages/net/${i}
-           cp -rf feeds/${_SRC_PACKAGE}/${i} feeds/packages/net/${i}
+           rm -rf feeds/packages/net/${i} && cp -rf feeds/${_SRC_PACKAGE}/${i} feeds/packages/net/${i}
         fi
     done
 }
