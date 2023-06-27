@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-06-23 00:57
+# 2023-06-27 15:16
 #
 # Modify APP Config
 #
@@ -9,13 +9,17 @@ INSET_FILES_DIR=$1
 GET_ARCH=$2
 
 echo ">> Replace the old native packages"
-#[ -e feeds/packages/net/haproxy ] && rm -rf feeds/packages/net/haproxy
-#[ -e feeds/packages/net/shadowsocks-libev ] && rm -rf feeds/packages/net/shadowsocks-libev
-#[ -e feeds/packages/net/v2raya ] && rm -rf feeds/packages/net/v2raya
-if [ -e feeds/packages/net/trojan-go ]; then rm -rf feeds/packages/net/trojan-go; cp -rf feeds/passwall/trojan-go feeds/packages/net/trojan-go; fi
-if [ -e feeds/packages/net/v2ray-core ]; then rm -rf feeds/packages/net/v2ray-core; cp -rf feeds/passwall/v2ray-core feeds/packages/net/v2ray-core; fi
-if [ -e feeds/packages/net/v2ray-geodata ]; then rm -rf feeds/packages/net/v2ray-geodata; cp -rf feeds/passwall/v2ray-geodata feeds/packages/net/v2ray-geodata; fi
-if [ -e feeds/packages/net/xray-core ]; then rm -rf feeds/packages/net/xray-core; cp -rf feeds/passwall/xray-core feeds/packages/net/xray-core; fi
+REPLACE_NET_PACKAGE() {
+    local _SRC_PACKAGE=$1
+    for i in `ls feeds/${_SRC_PACKAGE}`; do
+        if [ -e feeds/packages/net/${i} ]; then
+           rm -rf feeds/packages/net/${i}
+           cp -rf feeds/${_SRC_PACKAGE}/${i} feeds/packages/net/${i}
+        fi
+    done
+}
+REPLACE_NET_PACKAGE helloworld
+REPLACE_NET_PACKAGE passwall
 
 echo ">> Inset initialization script"
 mkdir -p files/root
