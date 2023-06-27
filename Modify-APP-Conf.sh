@@ -14,6 +14,7 @@ REPLACE_NET_PACKAGE() {
     for i in `ls feeds/${_SRC_PACKAGE}`; do
         if [ -e feeds/packages/net/${i} ]; then
            rm -rf feeds/packages/net/${i} && cp -rf feeds/${_SRC_PACKAGE}/${i} feeds/packages/net/${i}
+           echo "replace [${i}] from ${_SRC_PACKAGE}"
         fi
     done
 }
