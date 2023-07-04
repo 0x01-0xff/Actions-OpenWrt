@@ -1,7 +1,7 @@
 #!/bin/sh
 _settingType="$1"
 # Openwrt Setting Script Base on v22.03.5 x86_64
-# Huson 2023-06-25 14:52
+# Huson 2023-07-04 23:14
 # IP Assign: MainRouter:1, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:100-199
 # Bypass Main Network: MainRouter:1, ViceRouter:2, VM:3, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:10.0.1.11-254
 # USE: # sh set_op.sh [normal/bypass]
@@ -431,9 +431,10 @@ set_adblock_sources_list() {
 		done
 		_green "[Adblock]: Sources Lists Done, Trigger: ${_workTrigger}\n"
 		uci commit adblock
-		_greenH "Restarting Adblock...\n"
-		/etc/init.d/adblock restart > /dev/null
-		sleep 3
+		_greenH "Restarting Adblock...\n" &
+		/etc/init.d/adblock restart >/dev/null 2>&1
+		wait
+		sleep 2
 	fi
 }
 ###############################################################################
@@ -473,15 +474,18 @@ case "$_settingType" in
 		;;
 esac
 
-_greenH "Restarting DHCP...\n"
-/etc/init.d/odhcpd restart > /dev/null
-sleep 3
-_greenH "Restarting Firewall...\n"
-/etc/init.d/firewall restart > /dev/null
-sleep 3
-_greenH "Restarting Network...\n"
-/etc/init.d/network restart > /dev/null
-sleep 8
+_greenH "Restarting DHCP...\n" &
+/etc/init.d/odhcpd restart >/dev/null 2>&1
+wait
+sleep 2
+_greenH "Restarting Firewall...\n" &
+/etc/init.d/firewall restart >/dev/null 2>&1
+wait
+sleep 2
+_greenH "Restarting Network...\n" &
+/etc/init.d/network restart >/dev/null 2>&1
+wait
+sleep 2
 _greenH "Rebooting System...\n"
 sleep 2
 reboot
