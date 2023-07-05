@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-07-05 15:12
+# 2023-07-05 21:30
 #
 # Modify APP Config
 #
@@ -67,7 +67,7 @@ if [ -e ${PW_RULES_DIR}/chnlist ]; then
 else
     echo "make chnlist error!"
 fi
-chmod -R 664 ${PW_RULES_DIR}
+sudo chmod 644 ${PW_RULES_DIR}/gfwlist ${PW_RULES_DIR}/chnroute ${PW_RULES_DIR}/chnroute6 ${PW_RULES_DIR}/chnlist
 
 echo ">> Implantation extra geosite.dat/geoip.dat to passwall2"
 GEODAT_DIR="feeds/passwall2/luci-app-passwall2/root/usr/share/v2ray"
