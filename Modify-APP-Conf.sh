@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-07-06 11:51
+# 2023-07-07 02:44
 #
 # Modify APP Config
 #
@@ -33,7 +33,7 @@ replaceNETpackages ${PW_PKG_FEEDS_NAME}
 
 echo ">> Implantation initialization script"
 mkdir -p files/root
-cp $INSET_FILES_DIR/set_op.sh files/root/set_op.sh
+cp ${INSET_FILES_DIR}/set_op.sh files/root/set_op.sh
 [ -e files/root/set_op.sh ] && echo "copy set_op.sh done."
 chmod 4755 files/root/set_op.sh
 
@@ -42,8 +42,8 @@ PW_DEF_CONF_FILE="feeds/${PW_FEEDS_NAME}/luci-app-passwall/root/usr/share/passwa
 PW2_DEF_CONF_FILE="feeds/${PW2_FEEDS_NAME}/luci-app-passwall2/root/usr/share/passwall2/0_default_config"
 sed -i '/^config nodes/,$d' $PW_DEF_CONF_FILE
 sed -i '/^config nodes/,$d' $PW2_DEF_CONF_FILE
-cat $INSET_FILES_DIR/pw_xray_config >> $PW_DEF_CONF_FILE
-cat $INSET_FILES_DIR/pw_xray_config >> $PW2_DEF_CONF_FILE
+cat ${INSET_FILES_DIR}/pw_xray_config >> $PW_DEF_CONF_FILE
+cat ${INSET_FILES_DIR}/pw_xray_config >> $PW2_DEF_CONF_FILE
 
 echo ">> Implantation new rules lists to passwall"
 PW_RULES_DIR="feeds/${PW_FEEDS_NAME}/luci-app-passwall/root/usr/share/passwall/rules"
@@ -100,35 +100,35 @@ GET_RULES_CON=$(sed -n 2p $OC_SUB_INI_FILE 2>/dev/null)
 if [ ! "${GET_RULES_CON: 0: 5}" == "Huson" ]; then
     sed -i '2i Huson规则,config_h.ini,http:\/\/127.0.0.1\/openclash_config_h.ini\nHuson远程规则,remote_config_h.ini,https:\/\/raw.githubusercontent.com\/0x01-0xff\/ProxyProfiles\/master\/Clash\/remote_config_h.ini' $OC_SUB_INI_FILE
     echo "addition Huson rules done."
-    cp $INSET_FILES_DIR/openclash_config_h.ini feeds/${OC_FEEDS_NAME}/luci-app-openclash/root/www/openclash_config_h.ini
+    cp ${INSET_FILES_DIR}/openclash_config_h.ini feeds/${OC_FEEDS_NAME}/luci-app-openclash/root/www/openclash_config_h.ini
     [ -e feeds/${OC_FEEDS_NAME}/luci-app-openclash/root/www/openclash_config_h.ini ] && echo "copy config file done."
     mkdir -p files/etc/subconverter/rules
-    cp $INSET_FILES_DIR/GoogleALL.list files/etc/subconverter/rules/GoogleALL.list
-    cp $INSET_FILES_DIR/OpenAi.list files/etc/subconverter/rules/OpenAi.list
-    cp $INSET_FILES_DIR/PayPal.list files/etc/subconverter/rules/PayPal.list
+    cp ${INSET_FILES_DIR}/GoogleALL.list files/etc/subconverter/rules/GoogleALL.list
+    cp ${INSET_FILES_DIR}/OpenAi.list files/etc/subconverter/rules/OpenAi.list
+    cp ${INSET_FILES_DIR}/PayPal.list files/etc/subconverter/rules/PayPal.list
 fi
 
 echo ">> Implantation openclash core"
-OC_CORE_DIR="feeds/${OC_FEEDS_NAME}/wwluci-app-openclash/root/etc/openclash/core"
+OC_CORE_DIR="feeds/${OC_FEEDS_NAME}/luci-app-openclash/root/etc/openclash/core"
 mkdir -p ${OC_CORE_DIR}
 $CURL_PARAMS https://raw.githubusercontent.com/vernesong/OpenClash/core/master/core_version -o ${OC_CORE_DIR}/clash_last_version 2>&1
-tmp_TUN_CORE_VERSION=$(sed -n 2p ${OC_CORE_DIR}/clash_last_version 2>/dev/null)
+TUN_CORE_VERSION=$(sed -n 2p ${OC_CORE_DIR}/clash_last_version 2>/dev/null)
 rm -rf ${OC_CORE_DIR}/clash_last_version >/dev/null 2>&1
-$CURL_PARAMS https://raw.githubusercontent.com/vernesong/OpenClash/core/master/premium/clash-linux-$GET_ARCH-"$tmp_TUN_CORE_VERSION".gz -o ${OC_CORE_DIR}/clash-tun-linux-$GET_ARCH.gz 2>&1
-gzip -d ${OC_CORE_DIR}/clash-tun-linux-$GET_ARCH.gz >/dev/null 2>&1
-mv ${OC_CORE_DIR}/clash-tun-linux-$GET_ARCH ${OC_CORE_DIR}/clash_tun >/dev/null 2>&1
-rm -rf ${OC_CORE_DIR}/clash-tun-linux-$GET_ARCH.gz >/dev/null 2>&1
+$CURL_PARAMS https://raw.githubusercontent.com/vernesong/OpenClash/core/master/premium/clash-linux-${GET_ARCH}-"${TUN_CORE_VERSION}".gz -o ${OC_CORE_DIR}/clash-tun-linux-${GET_ARCH}.gz 2>&1
+gzip -d ${OC_CORE_DIR}/clash-tun-linux-${GET_ARCH}.gz >/dev/null 2>&1
+mv ${OC_CORE_DIR}/clash-tun-linux-${GET_ARCH} ${OC_CORE_DIR}/clash_tun >/dev/null 2>&1
+rm -rf ${OC_CORE_DIR}/clash-tun-linux-${GET_ARCH}.gz >/dev/null 2>&1
 [ -e ${OC_CORE_DIR}/clash_tun ] && echo "clash_tun done."
-$CURL_PARAMS https://raw.githubusercontent.com/vernesong/OpenClash/core/master/meta/clash-linux-$GET_ARCH.tar.gz -o ${OC_CORE_DIR}/clash-meta-linux-$GET_ARCH.tar.gz 2>&1
-tar zxvf ${OC_CORE_DIR}/clash-meta-linux-$GET_ARCH.tar.gz -C ${OC_CORE_DIR} >/dev/null 2>&1
+$CURL_PARAMS https://raw.githubusercontent.com/vernesong/OpenClash/core/master/meta/clash-linux-${GET_ARCH}.tar.gz -o ${OC_CORE_DIR}/clash-meta-linux-${GET_ARCH}.tar.gz 2>&1
+tar zxvf ${OC_CORE_DIR}/clash-meta-linux-${GET_ARCH}.tar.gz -C ${OC_CORE_DIR} >/dev/null 2>&1
 mv ${OC_CORE_DIR}/clash ${OC_CORE_DIR}/clash_meta >/dev/null 2>&1
-rm -rf ${OC_CORE_DIR}/clash-meta-linux-$GET_ARCH.tar.gz >/dev/null 2>&1
+rm -rf ${OC_CORE_DIR}/clash-meta-linux-${GET_ARCH}.tar.gz >/dev/null 2>&1
 [ -e ${OC_CORE_DIR}/clash_meta ] && echo "clash_meta done."
-$CURL_PARAMS https://raw.githubusercontent.com/vernesong/OpenClash/core/master/dev/clash-linux-$GET_ARCH.tar.gz -o ${OC_CORE_DIR}/clash-linux-$GET_ARCH.tar.gz 2>&1
-tar zxvf ${OC_CORE_DIR}/clash-linux-$GET_ARCH.tar.gz -C ${OC_CORE_DIR} >/dev/null 2>&1
-rm -rf ${OC_CORE_DIR}/clash-linux-$GET_ARCH.tar.gz >/dev/null 2>&1
+$CURL_PARAMS https://raw.githubusercontent.com/vernesong/OpenClash/core/master/dev/clash-linux-${GET_ARCH}.tar.gz -o ${OC_CORE_DIR}/clash-linux-${GET_ARCH}.tar.gz 2>&1
+tar zxvf ${OC_CORE_DIR}/clash-linux-${GET_ARCH}.tar.gz -C ${OC_CORE_DIR} >/dev/null 2>&1
+rm -rf ${OC_CORE_DIR}/clash-linux-${GET_ARCH}.tar.gz >/dev/null 2>&1
 [ -e ${OC_CORE_DIR}/clash ] && echo "clash done."
 chmod -R 4755 ${OC_CORE_DIR}
 
 echo ">> CleanUp"
-rm -rf $INSET_FILES_DIR >/dev/null 2>&1
+rm -rf ${INSET_FILES_DIR} >/dev/null 2>&1
