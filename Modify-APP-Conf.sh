@@ -1,14 +1,14 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-07-06 11:23
+# 2023-07-06 11:51
 #
 # Modify APP Config
 #
 INSET_FILES_DIR=$1
 GET_ARCH=$2
 #
-PW_LUCI_FEEDS_NAME="passwall_luci"
+PW_PKG_FEEDS_NAME="passwall_pkg"
 PW_FEEDS_NAME="passwall"
 PW2_FEEDS_NAME="passwall2"
 SSR_FEEDS_NAME="helloworld"
@@ -29,7 +29,7 @@ replaceNETpackages() {
     done
 }
 replaceNETpackages ${SSR_FEEDS_NAME}
-replaceNETpackages ${PW_FEEDS_NAME}
+replaceNETpackages ${PW_PKG_FEEDS_NAME}
 
 echo ">> Implantation initialization script"
 mkdir -p files/root
@@ -38,7 +38,7 @@ cp $INSET_FILES_DIR/set_op.sh files/root/set_op.sh
 chmod 4755 files/root/set_op.sh
 
 echo ">> Modify passwall/passwall2 xray config"
-PW_DEF_CONF_FILE="feeds/${PW_LUCI_FEEDS_NAME}/luci-app-passwall/root/usr/share/passwall/0_default_config"
+PW_DEF_CONF_FILE="feeds/${PW_FEEDS_NAME}/luci-app-passwall/root/usr/share/passwall/0_default_config"
 PW2_DEF_CONF_FILE="feeds/${PW2_FEEDS_NAME}/luci-app-passwall2/root/usr/share/passwall2/0_default_config"
 sed -i '/^config nodes/,$d' $PW_DEF_CONF_FILE
 sed -i '/^config nodes/,$d' $PW2_DEF_CONF_FILE
@@ -46,7 +46,7 @@ cat $INSET_FILES_DIR/pw_xray_config >> $PW_DEF_CONF_FILE
 cat $INSET_FILES_DIR/pw_xray_config >> $PW2_DEF_CONF_FILE
 
 echo ">> Implantation new rules lists to passwall"
-PW_RULES_DIR="feeds/${PW_LUCI_FEEDS_NAME}/luci-app-passwall/root/usr/share/passwall/rules"
+PW_RULES_DIR="feeds/${PW_FEEDS_NAME}/luci-app-passwall/root/usr/share/passwall/rules"
 if [ ! -e $PW_RULES_DIR ]; then mkdir -p $PW_RULES_DIR; fi
 rm -f ${PW_RULES_DIR}/gfwlist ${PW_RULES_DIR}/chnroute ${PW_RULES_DIR}/chnroute6 ${PW_RULES_DIR}/chnlist
 $CURL_PARAMS https://fastly.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/gfw.txt -o ${PW_RULES_DIR}/gfwlist 2>&1
