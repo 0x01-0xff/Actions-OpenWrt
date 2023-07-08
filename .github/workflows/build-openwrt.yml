@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2023-06-24 12:19
+# 2023-07-07 21:10
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -156,7 +156,7 @@ jobs:
       uses: actions/upload-artifact@v3
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_${{ env.REPO_TAG }}_bin_${{ env.GET_ARCH }}${{ env.FILE_DATE }}
         path: ${{ env.CUR_OP_DIR }}/bin
 
     - name: Organize files
@@ -172,7 +172,7 @@ jobs:
       uses: actions/upload-artifact@v3
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_${{ env.REPO_TAG }}_firmware_${{ env.GET_ARCH }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Upload firmware to cowtransfer
