@@ -1,7 +1,7 @@
 #!/bin/sh
 _settingType="$1"
 # Openwrt Setting Script Base on v22.03.5 x86_64
-# Huson 2023-07-08 14:42
+# Huson 2023-07-08 20:42
 # IP Assign: MainRouter:1, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:100-199
 # Bypass Main Network: MainRouter:1, ViceRouter:2, VM:3, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:10.0.1.11-254
 # USE: # sh set_op.sh [normal/bypass]
@@ -116,11 +116,14 @@ disableService() {
 }
 uciDelMultiConfigSection() {
 	local _delConfigSection="$1"
-	local o=$2
-	while [ ! -z $(uci -q get ${_delConfigSection}[$o]) ]; do
+	local _cut=$2
+	local i=0
+	local o
+	while [ ! -z $(uci -q get ${_delConfigSection}[$i]) ]; do let i++; done
+	let i=$i-1
+	for o in $(seq $i -1 $_cut); do
 		uci delete ${_delConfigSection}[$o]
 		_yellow "[${_delConfigSection%.*}]: Deleted ${_delConfigSection##*.}[$o]\n"
-		let o++
 	done
 }
 getEthNameViaMac() {
@@ -205,19 +208,20 @@ bypass_disable_dhcp_server() {
 	uci set dhcp.lan.ndp=0
 	uci delete dhcp.wan
 	uci set dhcp.odhcpd.maindhcp=0
-	uci set dhcp.@dnsmasq[0].noresolv=1
-	uci set dhcp.@dnsmasq[0].nohosts=1
-	uci set dhcp.@dnsmasq[0].authoritative=0
-	uci set dhcp.@dnsmasq[0].boguspriv=0
-	uci set dhcp.@dnsmasq[0].readethers=0
 	uci set dhcp.@dnsmasq[0].domainneeded=1
 	uci set dhcp.@dnsmasq[0].localise_queries=1
 	uci set dhcp.@dnsmasq[0].rebind_protection=1
 	uci set dhcp.@dnsmasq[0].rebind_localhost=1
 	uci set dhcp.@dnsmasq[0].expandhosts=1
-	uci set dhcp.@dnsmasq[0].nonwildcard=1
 	uci set dhcp.@dnsmasq[0].localservice=1
-	uci set dhcp.@dnsmasq[0].server=${Main_Router_Ip}#53
+	uci set dhcp.@dnsmasq[0].localuse=1
+	uci set dhcp.@dnsmasq[0].noresolv=1
+	uci set dhcp.@dnsmasq[0].nohosts=1
+	uci set dhcp.@dnsmasq[0].authoritative=0
+	uci set dhcp.@dnsmasq[0].boguspriv=0
+	uci set dhcp.@dnsmasq[0].readethers=0
+	uci set dhcp.@dnsmasq[0].server=''
+	uci add_list dhcp.@dnsmasq[0].server=${Main_Router_Ip}#53
 	uci commit dhcp
 	_green "[Dhcp]: Dhcp Server Disabled\n"
 }
@@ -417,6 +421,7 @@ bypass_bind_router_domain() {
 	uci set dhcp.@domain[1].ip=$Vice_Router_Ip
 	_green "[Binded]: Vice-Router Domain: $Vice_Router_Domain\n"
 	uci commit dhcp
+	/etc/init.d/dnsmasq restart
 }
 set_adblock_sources_list() {
 	local _workTrigger="$1"
