@@ -1,7 +1,7 @@
 #!/bin/sh
 _settingType="$1"
 # Openwrt Setting Script Base on v22.03.5 x86_64
-# Huson 2023-07-06 11:51
+# Huson 2023-07-08 14:42
 # IP Assign: MainRouter:1, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:100-199
 # Bypass Main Network: MainRouter:1, ViceRouter:2, VM:3, NAS:10, TV:50-59, AP:200-253, AC:254, NormalDHCP:10.0.1.11-254
 # USE: # sh set_op.sh [normal/bypass]
@@ -14,7 +14,7 @@ Host_Name_Bypass="Vice-Router"
 
 ########## NORMAL SETTING ########## NORMAL SETTING ##########
 #******# System Setting
-Host_Name="HusonRouter"
+Host_Name="HRouter"
 Zone_Name="Asia/Shanghai"
 Time_Zone="CST-8"
 Router_Domain="router.hs"
@@ -96,14 +96,6 @@ set_system_info() {
 	uci commit system
 	_green "[System]: Set Router Name to ${Host_Name}, Time-zone ${Time_Zone}\n"
 }
-disable_service() {
-	if [ -f /etc/init.d/banip ]; then /etc/init.d/banip stop && /etc/init.d/banip disable; fi
-	if [ -f /etc/init.d/ddns ]; then /etc/init.d/ddns stop && /etc/init.d/ddns disable; fi
-	if [ -f /etc/init.d/frpc ]; then /etc/init.d/frpc stop && /etc/init.d/frpc disable; fi
-	if [ -f /etc/init.d/frps ]; then /etc/init.d/frps stop && /etc/init.d/frps disable; fi
-	if [ -f /etc/init.d/https-dns-proxy ]; then /etc/init.d/https-dns-proxy stop && /etc/init.d/https-dns-proxy disable; fi
-	if [ -f /etc/init.d/pbr ]; then /etc/init.d/pbr stop && /etc/init.d/pbr disable; fi
-}
 set_ssh_server() {
 	uci set dropbear.@dropbear[0].PasswordAuth=on
 	uci set dropbear.@dropbear[0].RootPasswordAuth=on
@@ -112,11 +104,22 @@ set_ssh_server() {
 	uci commit dropbear
 	_green "[SSH]: Set SSH Server to Lan on Port 22\n"
 }
+disableService() {
+	local _appNameLists="$1"
+	for i in ${_appNameLists}; do
+		if [ -f /etc/init.d/${i} ]; then 
+			/etc/init.d/${i} stop >/dev/null 2>&1
+			/etc/init.d/${i} disable >/dev/null 2>&1
+			_yellow "[Service Disable]: ${i}\n"
+		fi
+	done
+}
 uciDelMultiConfigSection() {
 	local _delConfigSection="$1"
-	local o=0
+	local o=$2
 	while [ ! -z $(uci -q get ${_delConfigSection}[$o]) ]; do
 		uci delete ${_delConfigSection}[$o]
+		_yellow "[${_delConfigSection%.*}]: Deleted ${_delConfigSection##*.}[$o]\n"
 		let o++
 	done
 }
@@ -198,9 +201,9 @@ bypass_disable_dhcp_server() {
 	uci set dhcp.lan.ignore=1
 	uci set dhcp.lan.dynamicdhcp=0
 	uci set dhcp.lan.dhcpv6=0
-	uci set dhcp.lan.ra=relay
-	uci set dhcp.lan.ndp=relay
-	#uci set dhcp.wan.ignore=1
+	uci set dhcp.lan.ra=0
+	uci set dhcp.lan.ndp=0
+	uci delete dhcp.wan
 	uci set dhcp.odhcpd.maindhcp=0
 	uci set dhcp.@dnsmasq[0].noresolv=1
 	uci set dhcp.@dnsmasq[0].nohosts=1
@@ -366,11 +369,8 @@ bypass_firewall_interface() {
 	#uci set firewall.@zone[0].family=ipv4
 	uci set firewall.@forwarding[0].src=lan
 	uci set firewall.@forwarding[0].dest=lan
-	local i=1
-	while [ ! -z $(uci -q get firewall.@zone[$i]) ]; do
-		uci delete firewall.@zone[$i]
-		let i++
-	done
+	uciDelMultiConfigSection "firewall.@zone" 1
+	uciDelMultiConfigSection "firewall.@rule" 0
 	uci commit firewall
 	_green "[Firewall]: Bypass inserted\n"
 }
@@ -425,16 +425,11 @@ set_adblock_sources_list() {
 		uci set adblock.global.adb_enabled=1
 		uci set adblock.global.adb_trigger=${_workTrigger}
 		uci set adblock.global.adb_sources=''
-#		uci set adblock.global.adb_sources="adaway adguard easylist reg_cn reg_es reg_jp reg_ru yoyo"
 		for i in ${_block_lists}; do
 			uci add_list adblock.global.adb_sources=$i
 		done
-		_green "[Adblock]: Sources Lists Done, Trigger: ${_workTrigger}\n"
+		_green "[Adblock]: Sources Lists Added, Trigger: ${_workTrigger}\n"
 		uci commit adblock
-		_greenH "Restarting Adblock...\n" &
-		/etc/init.d/adblock restart >/dev/null 2>&1
-		wait
-		sleep 2
 	fi
 }
 ###############################################################################
@@ -447,7 +442,7 @@ case "$_settingType" in
 		comparisonProtMac "Wan"
 		checkPackageInstalled "dnsmasq-full"
 		set_system_info
-		disable_service
+		disableService "banip ddns frpc frps https-dns-proxy pbr"
 #		set_ssh_server
 		insert_network_interface
 		insert_firewall_interface
@@ -458,7 +453,7 @@ case "$_settingType" in
 	bypass)
 		checkPackageInstalled "dnsmasq-full"
 		set_system_info
-		disable_service
+		disableService "banip ddns frpc frps https-dns-proxy pbr"
 #		set_ssh_server
 		insert_bypass_network_interface
 		bypass_disable_dhcp_server
@@ -477,17 +472,17 @@ esac
 _greenH "Restarting DHCP...\n" &
 /etc/init.d/odhcpd restart >/dev/null 2>&1
 wait
-sleep 2
+sleep 3
 _greenH "Restarting Firewall...\n" &
 /etc/init.d/firewall restart >/dev/null 2>&1
 wait
-sleep 2
+sleep 3
 _greenH "Restarting Network...\n" &
 /etc/init.d/network restart >/dev/null 2>&1
 wait
-sleep 6
+sleep 8
 _greenH "Rebooting System...\n"
-sleep 2
+sleep 3
 reboot
 exit 0
 
