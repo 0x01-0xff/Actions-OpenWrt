@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-07-06 11:51
+# 2023-07-29 20:59
 #
 # System Basic Parameters
 #
@@ -11,8 +11,8 @@ echo ">> Fix bios boot partition is under 1 MiB"
 sed -i 's/256/1024/g' target/linux/x86/image/Makefile
 
 # Inset root password
-echo ">> Set root password"
-sed -i 's/root:::0:99999:7:::/root:\$1\$PaaZ9jjP\$tvTgcLR4tQtpbDV2cTmkB0::0:99999:7:::/g' package/base-files/files/etc/shadow
+#echo ">> Set root password"
+#sed -i 's/root:::0:99999:7:::/root:\$1\$PaaZ9jjP\$tvTgcLR4tQtpbDV2cTmkB0::0:99999:7:::/g' package/base-files/files/etc/shadow
 
 # Modify IP/hostname/timezone
 echo ">> Modify IP/hostname/timezone"
