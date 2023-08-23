@@ -26,6 +26,7 @@ config nodes 'myshunt'
 	option UDP 'nil'
 	option default_node '_direct'
 	option domainStrategy 'IPOnDemand'
+	option domainMatcher 'hybrid'
 
 config shunt_rules 'BasicDirect'
 	option remarks '局域网及国内DNS'
