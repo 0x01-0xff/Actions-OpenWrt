@@ -43,7 +43,7 @@ PW2_DEF_CONF_FILE="feeds/${PW2_FEEDS_NAME}/luci-app-passwall2/root/usr/share/pas
 sed -i '/^config nodes/,$d' $PW_DEF_CONF_FILE
 sed -i '/^config nodes/,$d' $PW2_DEF_CONF_FILE
 cat ${INSET_FILES_DIR}/pw_xray_config >> $PW_DEF_CONF_FILE
-cat ${INSET_FILES_DIR}/pw_xray_config >> $PW2_DEF_CONF_FILE
+cat ${INSET_FILES_DIR}/pw2_xray_config >> $PW2_DEF_CONF_FILE
 
 echo ">> Implantation new rules lists to passwall"
 PW_RULES_DIR="feeds/${PW_FEEDS_NAME}/luci-app-passwall/root/usr/share/passwall/rules"
