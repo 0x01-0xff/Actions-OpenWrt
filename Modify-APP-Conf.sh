@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-07-24 22:10
+# 2023-08-23 11:07
 #
 # Modify APP Config
 #
@@ -85,11 +85,6 @@ $CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/dow
 [ -e ${GEODAT_DIR}/geosite_extra.dat ] && echo "geosite_extra.dat done."
 $CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o ${GEODAT_DIR}/geoip_extra.dat 2>&1
 [ -e ${GEODAT_DIR}/geoip_extra.dat ] && echo "geoip_extra.dat done."
-
-##### TEMP: passwall fix balancing_node missing after subscribe
-sed -i 's/local index = node2\[".index"\]/local section = uci:section(appname, "nodes", node_id)/g' feeds/${PW_FEEDS_NAME}/luci-app-passwall/root/usr/share/passwall/subscribe.lua
-sed -i 's/uci:set_list(appname, "@nodes\[" \.\. index \.\. "\]", "balancing_node", vv\.new_nodes)/uci:set_list(appname, section, "balancing_node", vv.new_nodes)/g' feeds/${PW_FEEDS_NAME}/luci-app-passwall/root/usr/share/passwall/subscribe.lua
-#####
 
 echo ">> Implantation rules set and convert server to openclash"
 OC_SUB_LUA_FILE="feeds/${OC_FEEDS_NAME}/luci-app-openclash/luasrc/model/cbi/openclash/config-subscribe-edit.lua"
