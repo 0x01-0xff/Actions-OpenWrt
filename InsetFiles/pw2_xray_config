@@ -1,6 +1,6 @@
 config nodes 'myshunt'
 	option remarks '分流总节点'
-	option type 'Xray'
+	option type 'sing-box'
 	option protocol '_shunt'
 	option BasicDirect '_direct'
 	option Unbreak '_direct'
