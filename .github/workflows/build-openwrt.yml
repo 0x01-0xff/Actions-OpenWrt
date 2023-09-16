@@ -18,7 +18,7 @@ on:
 
 env:
   REPO_URL: https://git.openwrt.org/openwrt/openwrt.git
-  REPO_TAG: v22.03.5
+  REPO_TAG: v23.05.0-rc3
   CUR_OP_DIR: openwrt
   INSET_FILES_DIR: InsetFiles
   MY_WORK_HOME: workhome
