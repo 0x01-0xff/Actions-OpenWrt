@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2023-10-09 17:07
+# 2023-11-15 17:43
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -18,7 +18,7 @@ on:
 
 env:
   REPO_URL: https://git.openwrt.org/openwrt/openwrt.git
-  REPO_TAG: v23.05.0
+  REPO_TAG: v23.05.2
   CUR_OP_DIR: openwrt
   INSET_FILES_DIR: InsetFiles
   MY_WORK_HOME: workhome
