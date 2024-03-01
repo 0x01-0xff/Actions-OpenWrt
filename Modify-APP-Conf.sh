@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2023-12-01 16:40
+# 2024-03-01 18:14
 #
 # Modify APP Config
 #
@@ -35,7 +35,7 @@ replaceNETpackages ${PW_PKG_FEEDS_NAME}
 # **** TMP ****
 echo ">> Replace golang up to date"
 rm -rf feeds/packages/lang/golang
-git clone https://github.com/sbwml/packages_lang_golang -b 21.x feeds/packages/lang/golang
+git clone https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang
 # **** TMP ****
 
 
