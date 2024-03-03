@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2024-03-03 22:55
+# 2024-03-03 23:42
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -77,16 +77,16 @@ jobs:
         npm_clean: "True"
         os_swap: "True"
 
-    - name: Freeing up disk space
-      uses: easimon/maximize-build-space@master
-      with: 
+    #- name: Freeing up disk space
+    #  uses: easimon/maximize-build-space@master
+    #  with: 
         #root-reserve-mb: 2048
         #swap-size-mb: 1
-        remove-dotnet: 'true'
-        remove-android: 'true'
-        remove-haskell: 'true'
-        remove-codeql: 'true'
-        remove-docker-images: 'true'
+        #remove-dotnet: 'true'
+        #remove-android: 'true'
+        #remove-haskell: 'true'
+        #remove-codeql: 'true'
+        #remove-docker-images: 'true'
 
     - name: Initialization environment
       env:
@@ -96,6 +96,7 @@ jobs:
         sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d /usr/local/lib/android /opt/ghc \
         /usr/share/dotnet /usr/local/graalvm /usr/local/.ghcup \
         /usr/local/share/powershell /usr/local/share/chromium /usr/local/lib/node_modules /opt/hostedtoolcache/CodeQL
+        sudo docker image prune --all --force
         sudo -E apt-get -qq purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php* mongodb* dotnet* moby* snap* docker* hhvm* aspnetcore* adoptopenjdk* || true
         sudo -E apt-get -qq install pkg-config
         sudo -E apt-get -qq update
