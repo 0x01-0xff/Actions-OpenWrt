@@ -63,6 +63,7 @@ jobs:
     - name: Test parameters
       id: compile
       run: |
+        #git clone -b $REPO_TAG --depth=1 $REPO_URL $CUR_OP_DIR
         sudo mkdir $CUR_OP_DIR
         ln -sf /${MY_WORK_HOME}/${CUR_OP_DIR} ${GITHUB_WORKSPACE}/${CUR_OP_DIR}
         sudo mkdir -p ${CUR_OP_DIR}/bin/targets/x86/64
