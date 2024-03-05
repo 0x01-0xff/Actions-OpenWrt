@@ -65,8 +65,8 @@ jobs:
       run: |
         mkdir $CUR_OP_DIR
         ln -sf /${MY_WORK_HOME}/${CUR_OP_DIR} ${GITHUB_WORKSPACE}/${CUR_OP_DIR}
-        mkdir -p ${CUR_OP_DIR}/bin/targets/x86/64
-        mkdir -p ${CUR_OP_DIR}/bin/targets/x86/64/packages
+        sudo mkdir -p ${CUR_OP_DIR}/bin/targets/x86/64
+        sudo mkdir -p ${CUR_OP_DIR}/bin/targets/x86/64/packages
         cp $FEEDS_CONF ${CUR_OP_DIR}/bin/targets/x86/64/feeds.conf.default
         cp -r $INSET_FILES_DIR ${CUR_OP_DIR}/bin/targets/x86/64/${INSET_FILES_DIR}
         echo "status=success" >> $GITHUB_OUTPUT
