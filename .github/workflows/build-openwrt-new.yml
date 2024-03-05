@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2024-03-05 10:29
+# 2024-03-05 19:19
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -194,14 +194,19 @@ jobs:
         name: OpenWrt_${{ env.REPO_TAG }}_bin_${{ env.GET_ARCH }}${{ env.FILE_DATE }}
         path: ${{ env.CUR_OP_DIR }}/bin
 
+    - name: Remove packages directory
+      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+      run: |
+        cd openwrt/bin/targets/*/*
+        rm -rf packages
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+
     - name: Organize files
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
       run: |
-        #cd openwrt/bin/targets/*/*
-        #rm -rf packages
-        cd ${CUR_OP_DIR}/bin
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        cd openwrt/bin
+        echo "FIRMWARE_bin=$PWD" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: Upload firmware directory
@@ -209,13 +214,14 @@ jobs:
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
         name: OpenWrt_${{ env.REPO_TAG }}_bin_${{ env.GET_ARCH }}${{ env.FILE_DATE }}
-        path: ${{ env.FIRMWARE }}
+        path: ${{ env.FIRMWARE_bin }}
 
     - name: Generate release tag
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       run: |
-        echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+        #echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+        echo "release_tag=OpenWrt-${REPO_TAG}-$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
         touch release.txt
         [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
         echo "status=success" >> $GITHUB_OUTPUT
