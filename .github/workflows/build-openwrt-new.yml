@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2024-03-05 00:01
+# 2024-03-05 10:29
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -31,10 +31,12 @@ env:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    #permissions:
+    #  contents: write
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@main
 
     - name: Check Server Performance
       run: |
@@ -234,11 +236,11 @@ jobs:
         retain_days: 0
         keep_minimum_runs: 2
 
-    - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@master
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      with:
-        keep_latest: 3
-        delete_tags: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #- name: Remove old Releases
+    #  uses: dev-drprasad/delete-older-releases@master
+    #  if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+    #  with:
+    #    keep_latest: 3
+    #    delete_tags: true
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
