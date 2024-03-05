@@ -65,7 +65,7 @@ jobs:
       run: |
         #git clone -b $REPO_TAG --depth=1 $REPO_URL $CUR_OP_DIR
         sudo mkdir $CUR_OP_DIR
-        sudo ln -sf /${MY_WORK_HOME}/${CUR_OP_DIR} ${GITHUB_WORKSPACE}/${CUR_OP_DIR}
+        ln -sf /${MY_WORK_HOME}/${CUR_OP_DIR} ${GITHUB_WORKSPACE}/${CUR_OP_DIR}
         sudo mkdir -p ${CUR_OP_DIR}/bin/targets/x86/64
         sudo mkdir -p ${CUR_OP_DIR}/bin/targets/x86/64/packages
         sudo cp -r $INSET_FILES_DIR ${CUR_OP_DIR}/bin/targets/x86/64/${INSET_FILES_DIR}
@@ -95,8 +95,10 @@ jobs:
       run: |
         #cd openwrt/bin/targets/*/*
         #rm -rf packages
-        #echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "FIRMWARE=${CUR_OP_DIR}/bin" >> $GITHUB_ENV
+        cd ${CUR_OP_DIR}/bin
+        echo "##### $PWD #####"
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+        #echo "FIRMWARE=${CUR_OP_DIR}/bin" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: Upload firmware directory
