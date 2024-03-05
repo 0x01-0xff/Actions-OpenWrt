@@ -109,7 +109,6 @@ jobs:
       with:
         name: OpenWrt_${{ env.REPO_TAG }}_bin_${{ env.GET_ARCH }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
-      run: echo "***** $PWD *****"
 
     - name: Generate release tag
       id: tag
