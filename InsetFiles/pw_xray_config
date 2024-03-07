@@ -411,6 +411,7 @@ config shunt_rules 'GoogleAll'
 	option remarks 'All Google Service'
 	option network 'tcp,udp'
 	option domain_list 'geosite:google'
+	option ip_list 'geoip:google'
 
 config shunt_rules 'BeBlocked'
 	option remarks 'All Blocked GFWList'
