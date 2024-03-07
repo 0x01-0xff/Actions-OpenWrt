@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2024-03-01 18:14
+# 2024-03-07 10:54
 #
 # Modify APP Config
 #
@@ -31,13 +31,10 @@ replaceNETpackages() {
 replaceNETpackages ${SSR_FEEDS_NAME}
 replaceNETpackages ${PW_PKG_FEEDS_NAME}
 
-
-# **** TMP ****
+# **** Update golang ****
 echo ">> Replace golang up to date"
 rm -rf feeds/packages/lang/golang
 git clone https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang
-# **** TMP ****
-
 
 echo ">> Implantation initialization script"
 mkdir -p files/root
@@ -86,13 +83,19 @@ else
 fi
 sudo chmod 644 ${PW_RULES_DIR}/gfwlist ${PW_RULES_DIR}/chnroute ${PW_RULES_DIR}/chnroute6 ${PW_RULES_DIR}/chnlist
 
-echo ">> Implantation extra geosite.dat/geoip.dat to passwall2"
+echo ">> Implantation Loyalsoldier geosite.dat/geoip.dat to v2ray"
 GEODAT_DIR="feeds/${PW2_FEEDS_NAME}/luci-app-passwall2/root/usr/share/v2ray"
 mkdir -p $GEODAT_DIR
-$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -o ${GEODAT_DIR}/geosite_extra.dat 2>&1
-[ -e ${GEODAT_DIR}/geosite_extra.dat ] && echo "geosite_extra.dat done."
-$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o ${GEODAT_DIR}/geoip_extra.dat 2>&1
-[ -e ${GEODAT_DIR}/geoip_extra.dat ] && echo "geoip_extra.dat done."
+#$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -o ${GEODAT_DIR}/geosite_extra.dat 2>&1
+#[ -e ${GEODAT_DIR}/geosite_extra.dat ] && echo "geosite_extra.dat done."
+#$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o ${GEODAT_DIR}/geoip_extra.dat 2>&1
+#[ -e ${GEODAT_DIR}/geoip_extra.dat ] && echo "geoip_extra.dat done."
+rm -rf ${GEODAT_DIR}/*.dat
+$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -o ${GEODAT_DIR}/geosite.dat 2>&1
+[ -e ${GEODAT_DIR}/geosite.dat ] && echo "geosite.dat done."
+$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o ${GEODAT_DIR}/geoip.dat 2>&1
+[ -e ${GEODAT_DIR}/geoip.dat ] && echo "geoip.dat done."
+sudo chmod 644 ${GEODAT_DIR}/geosite.dat ${GEODAT_DIR}/geoip.dat
 
 echo ">> Implantation rules set and convert server to openclash"
 OC_SUB_LUA_FILE="feeds/${OC_FEEDS_NAME}/luci-app-openclash/luasrc/model/cbi/openclash/config-subscribe-edit.lua"
