@@ -417,7 +417,7 @@ config shunt_rules 'GoogleAll'
 config shunt_rules 'BeBlocked'
 	option remarks 'All Blocked GFWList'
 	option network 'tcp,udp'
-	option domain_list 'ext:geosite_extra.dat:gfw
+	option domain_list 'geosite.dat:gfw
 domain:midjourney.com
 domain:d-id.com
 domain:v2ex.com
@@ -453,8 +453,8 @@ domain:sspanel.net
 config shunt_rules 'China'
 	option remarks 'China'
 	option network 'tcp,udp'
-	option ip_list 'geoip:cn'
 	option domain_list 'geosite:cn'
+	option ip_list 'geoip:cn'
 
 config shunt_rules 'QUIC'
 	option remarks 'QUIC'
