@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2024-03-07 10:54
+# 2024-03-10 12:48
 #
 # Modify APP Config
 #
@@ -84,18 +84,29 @@ fi
 sudo chmod 644 ${PW_RULES_DIR}/gfwlist ${PW_RULES_DIR}/chnroute ${PW_RULES_DIR}/chnroute6 ${PW_RULES_DIR}/chnlist
 
 echo ">> Implantation Loyalsoldier geosite.dat/geoip.dat to v2ray"
-GEODAT_DIR="feeds/${PW2_FEEDS_NAME}/luci-app-passwall2/root/usr/share/v2ray"
-mkdir -p $GEODAT_DIR
+#GEODAT_DIR="feeds/${PW2_FEEDS_NAME}/luci-app-passwall2/root/usr/share/v2ray"
+#mkdir -p $GEODAT_DIR
 #$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -o ${GEODAT_DIR}/geosite_extra.dat 2>&1
 #[ -e ${GEODAT_DIR}/geosite_extra.dat ] && echo "geosite_extra.dat done."
 #$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o ${GEODAT_DIR}/geoip_extra.dat 2>&1
 #[ -e ${GEODAT_DIR}/geoip_extra.dat ] && echo "geoip_extra.dat done."
-rm -rf ${GEODAT_DIR}/*.dat
-$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -o ${GEODAT_DIR}/geosite.dat 2>&1
-[ -e ${GEODAT_DIR}/geosite.dat ] && echo "geosite.dat done."
-$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o ${GEODAT_DIR}/geoip.dat 2>&1
-[ -e ${GEODAT_DIR}/geoip.dat ] && echo "geoip.dat done."
-sudo chmod 644 ${GEODAT_DIR}/geosite.dat ${GEODAT_DIR}/geoip.dat
+#rm -rf ${GEODAT_DIR}/*.dat
+#$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat -o ${GEODAT_DIR}/geosite.dat 2>&1
+#[ -e ${GEODAT_DIR}/geosite.dat ] && echo "geosite.dat done."
+#$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat -o ${GEODAT_DIR}/geoip.dat 2>&1
+#[ -e ${GEODAT_DIR}/geoip.dat ] && echo "geoip.dat done."
+#sudo chmod 644 ${GEODAT_DIR}/geosite.dat ${GEODAT_DIR}/geoip.dat
+GEODAT_MAKEFILE="feeds/${PW_PKG_FEEDS_NAME}/v2ray-geodata/Makefile"
+GEO_LAST_VER=$(curl -Ls "https://api.github.com/repos/Loyalsoldier/v2ray-rules-dat/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+GEOIP_HASH=$(curl -Ls "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/${GEO_LAST_VER}/geoip.dat.sha256sum" | awk '{print $1}')
+GEOSITE_HASH=$(curl -Ls "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/${GEO_LAST_VER}/geosite.dat.sha256sum" | awk '{print $1}')
+sed -i "s/GEOIP_VER:=.*$/GEOIP_VER:=${GEO_LAST_VER}/g" $GEODAT_MAKEFILE
+sed -i "s/GEOSITE_VER:=.*$/GEOSITE_VER:=${GEO_LAST_VER}/g" $GEODAT_MAKEFILE
+sed -i 's/https:\/\/github\.com\/v2fly\/geoip\/releases\//https:\/\/github\.com\/Loyalsoldier\/v2ray-rules-dat\/releases\//g' $GEODAT_MAKEFILE
+sed -i 's/https:\/\/github\.com\/v2fly\/domain-list-community\/releases\//https:\/\/github\.com\/Loyalsoldier\/v2ray-rules-dat\/releases\//g' $GEODAT_MAKEFILE
+sed -i 's/=dlc\.dat/=geosite\.dat/g' $GEODAT_MAKEFILE
+sed -i "/define Download\/geoip/,/^  HASH:=.*$/ s/^  HASH:=.*$/  HASH:=${GEOIP_HASH}/" $GEODAT_MAKEFILE
+sed -i "/define Download\/geosite/,/^  HASH:=.*$/ s/^  HASH:=.*$/  HASH:=${GEOSITE_HASH}/" $GEODAT_MAKEFILE
 
 echo ">> Implantation rules set and convert server to openclash"
 OC_SUB_LUA_FILE="feeds/${OC_FEEDS_NAME}/luci-app-openclash/luasrc/model/cbi/openclash/config-subscribe-edit.lua"
