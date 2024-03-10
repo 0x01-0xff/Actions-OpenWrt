@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2024-03-10 12:48
+# 2024-03-10 14:57
 #
 # Modify APP Config
 #
@@ -18,18 +18,6 @@ SC_FEEDS_NAME="subconverter"
 CURL_PARAMS="curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2"
 #
 #######################################
-echo ">> Replace the old native packages"
-replaceNETpackages() {
-    local _SRC_PACKAGE=$1
-    for i in `ls feeds/${_SRC_PACKAGE}`; do
-        if [ -e feeds/packages/net/${i} ]; then
-           rm -rf feeds/packages/net/${i} && cp -rf feeds/${_SRC_PACKAGE}/${i} feeds/packages/net/${i}
-           echo "replace [${i}] from ${_SRC_PACKAGE}."
-        fi
-    done
-}
-replaceNETpackages ${SSR_FEEDS_NAME}
-replaceNETpackages ${PW_PKG_FEEDS_NAME}
 
 # **** Update golang ****
 echo ">> Replace golang up to date"
@@ -151,6 +139,19 @@ tar zxvf ${OC_CORE_DIR}/clash-linux-${GET_ARCH}.tar.gz -C ${OC_CORE_DIR} >/dev/n
 rm -rf ${OC_CORE_DIR}/clash-linux-${GET_ARCH}.tar.gz >/dev/null 2>&1
 [ -e ${OC_CORE_DIR}/clash ] && echo "clash done."
 chmod -R 4755 ${OC_CORE_DIR}
+
+echo ">> Replace the old native packages"
+replaceNETpackages() {
+    local _SRC_PACKAGE=$1
+    for i in `ls feeds/${_SRC_PACKAGE}`; do
+        if [ -e feeds/packages/net/${i} ]; then
+           rm -rf feeds/packages/net/${i} && cp -rf feeds/${_SRC_PACKAGE}/${i} feeds/packages/net/${i}
+           echo "replace [${i}] from ${_SRC_PACKAGE}."
+        fi
+    done
+}
+replaceNETpackages ${SSR_FEEDS_NAME}
+replaceNETpackages ${PW_PKG_FEEDS_NAME}
 
 echo ">> CleanUp"
 rm -rf ${INSET_FILES_DIR} >/dev/null 2>&1
