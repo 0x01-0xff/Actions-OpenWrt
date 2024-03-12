@@ -416,7 +416,7 @@ config shunt_rules 'GoogleAll'
 config shunt_rules 'BeBlocked'
 	option remarks 'All Blocked GFWList'
 	option network 'tcp,udp'
-	option domain_list 'geosite.dat:gfw
+	option domain_list 'geosite:gfw
 domain:midjourney.com
 domain:d-id.com
 domain:v2ex.com
