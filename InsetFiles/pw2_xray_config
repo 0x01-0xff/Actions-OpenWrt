@@ -11,8 +11,8 @@ config nodes 'myshunt'
 	option OpenAI 'policy_JP'
 	option Github 'policy_HK'
 	option PayPal 'policy_US'
-	option TikTok 'policy_US'
 	option MsgApp 'policy_HK'
+	option TikTok 'policy_US'
 	option YouTube 'policy_HK'
 	option AppleTV 'policy_HK'
 	option Netflix 'policy_HK'
@@ -95,22 +95,25 @@ config shunt_rules 'PayPal'
 	option network 'tcp,udp'
 	option domain_list 'geosite:paypal'
 
+config shunt_rules 'MsgApp'
+	option remarks '国外社交APP'
+	option network 'tcp,udp'
+	option domain_list 'geosite:twitter
+geosite:telegram
+geosite:meta
+geosite:facebook
+geosite:instagram
+geosite:discord
+geosite:linkedin
+geosite:threads
+geosite:vk
+domain:x.com
+'
+
 config shunt_rules 'TikTok'
 	option remarks 'TikTok'
 	option network 'tcp,udp'
 	option domain_list 'geosite:tiktok'
-
-config shunt_rules 'MsgApp'
-	option remarks '国外社交APP'
-	option network 'tcp,udp'
-	option domain_list 'geosite:discord
-geosite:telegram
-geosite:twitter
-geosite:meta
-geosite:instagram
-geosite:line
-geosite:whatsapp
-'
 
 config shunt_rules 'YouTube'
 	option remarks 'YouTube'
@@ -120,18 +123,25 @@ config shunt_rules 'YouTube'
 config shunt_rules 'AppleTV'
 	option remarks 'AppleTV'
 	option network 'tcp,udp'
-	option domain_list 'full:np-edge.itunes.apple.com
+	option domain_list 'domain:tv.apple.com
+full:np-edge.itunes.apple.com
 full:play-edge.itunes.apple.com
-domain:tv.apple.com
+domain:appletv.com
+domain:appletv.fr
+domain:appletv.wang
+domain:appletv4.cn
+domain:appletv4.com.cn
+domain:appletvapp.apple
 '
 
 config shunt_rules 'Netflix'
 	option remarks 'Netflix'
 	option network 'tcp,udp'
 	option domain_list 'geosite:netflix'
+	option ip_list 'geoip:netflix'
 
 config shunt_rules 'StreamingSE'
-	option remarks '国内媒体'
+	option remarks '国内视频媒体'
 	option network 'tcp,udp'
 	option domain_list 'geosite:bilibili
 full:apiintl.biliapi.net
@@ -168,14 +178,59 @@ domain:youku.com
 '
 
 config shunt_rules 'Streaming'
-	option remarks '国外媒体'
+	option remarks '国外视频媒体'
 	option network 'tcp,udp'
-	option domain_list 'domain:edgedatg.com
-domain:go.com
-domain:abema.io
-domain:abema.tv
-domain:ameba.jp
-domain:hayabusa.io
+	option domain_list 'geosite:tiktok
+geosite:hbo
+geosite:netflix
+geosite:disney
+geosite:primevideo
+geosite:hulu
+geosite:tiktok
+geosite:youtube
+geosite:abema
+geosite:kktv
+geosite:kkbox
+geosite:litv
+geosite:viu
+geosite:mytvsuper
+geosite:bahamut
+geosite:dazn
+geosite:discoveryplus
+geosite:pornhub
+geosite:tidal
+geosite:twitch
+geosite:bahamut
+geosite:japonx
+geosite:catchplay
+geosite:spotify
+geosite:abc
+geosite:bbc
+geosite:cbs
+geosite:fox
+geosite:tvb
+geosite:ftv
+geosite:line
+geosite:niconico
+geosite:mudvod
+geosite:olevod
+geosite:pbs
+domain:tv.apple.com
+full:np-edge.itunes.apple.com
+full:play-edge.itunes.apple.com
+domain:appletv.com
+domain:appletv.fr
+domain:appletv.wang
+domain:appletv4.cn
+domain:appletv4.com.cn
+domain:appletvapp.apple
+domain:apple.news
+full:apple.comscoreresearch.com
+domain:appleenews.com
+domain:applenews.berlin
+domain:applenews.hamburg
+domain:applenews.tv
+domain:applenewsformat.com
 domain:c4assets.com
 domain:channel4.com
 full:atv-ps.amazon.com
@@ -190,8 +245,6 @@ full:dmqdd6hw24ucf.cloudfront.net
 full:ktpx.amazon.com
 domain:aiv-cdn.net
 domain:aiv-delivery.net
-domain:amazonvideo.com
-domain:media-amazon.com
 domain:pv-cdn.net
 regexp:^https?:\/\/www\.amazon\.com\/(Amazon-Video|gp\/video)\/
 full:np-edge.itunes.apple.com
@@ -201,31 +254,11 @@ full:aod-dash-uk-live.akamaized.net
 full:aod-hls-uk-live.akamaized.net
 full:vod-dash-uk-live.akamaized.net
 full:vod-thumb-uk-live.akamaized.net
-domain:bbc.co
-domain:bbc.co.uk
-domain:bbc.com
-domain:bbc.net.uk
-domain:bbcfmt.hs.llnwd.net
-domain:bbci.co
-domain:bbci.co.uk
-domain:bidi.net.uk
-full:gamer-cds.cdn.hinet.net
-full:gamer2-cds.cdn.hinet.net
-domain:bahamut.com.tw
-domain:gamer.com.tw
 full:d151l6v8er5bdm.cloudfront.net
 domain:d151l6v8er5bdm.cloudfront.net
 domain:d1sgwhnao7452x.cloudfront.net
-domain:dazn-api.com
-domain:dazn.com
-domain:dazndn.com
-domain:dcblivedazn.akamaized.net
-domain:indazn.com
-domain:indaznlab.com
-domain:sentry.io
 domain:deezer.com
 domain:dzcdn.net
-full:cdn.registerdisney.go.com
 domain:adobedtm.com
 domain:bam.nr-data.net
 domain:bamgrid.com
@@ -234,14 +267,6 @@ domain:cdn.optimizely.com
 domain:cdn.registerdisney.go.com
 domain:cws.conviva.com
 domain:d9.flashtalking.com
-domain:disney-plus.net
-domain:disney-portal.my.onetrust.com
-domain:disney.demdex.net
-domain:disney.my.sentry.io
-domain:disneyplus.bn5x.net
-domain:disneyplus.com
-domain:disneyplus.com.ssl.sc.omtrdc.net
-domain:disneystreaming.com
 domain:dssott.com
 domain:execute-api.us-east-1.amazonaws.com
 domain:js-agent.newrelic.com
@@ -250,44 +275,16 @@ full:content.jwplatform.com
 full:edge.api.brightcove.com
 full:videos-f.jwpsrv.com
 domain:encoretvb.com
-domain:fox.com
-domain:foxdcg.com
 domain:uplynk.com
-domain:hbo.com
-domain:hbogo.com
-domain:hbomax.com
-domain:hbomaxcdn.com
-domain:hbonow.com
 full:44wilhpljf.execute-api.ap-southeast-1.amazonaws.com
 full:bcbolthboa-a.akamaihd.net
 full:cf-images.ap-southeast-1.prod.boltdns.net
 full:dai3fd1oh325y.cloudfront.net
-full:hboasia1-i.akamaihd.net
-full:hboasia2-i.akamaihd.net
-full:hboasia3-i.akamaihd.net
-full:hboasia4-i.akamaihd.net
-full:hboasia5-i.akamaihd.net
-full:hboasialive.akamaized.net
-full:hbogoprod-vod.akamaized.net
-full:hbolb.onwardsmg.com
-full:hbounify-prod.evergent.com
-full:players.brightcove.net
-full:s3-ap-southeast-1.amazonaws.com
-domain:hboasia.com
-domain:hbogoasia.com
-domain:hbogoasia.hk
 domain:5itv.tv
 domain:ocnttv.com
 domain:cws-hulu.conviva.com
-domain:hulu.com
-domain:hulu.hb.omtrdc.net
-domain:hulu.sc.omtrdc.net
-domain:huluad.com
-domain:huluim.com
-domain:hulustream.com
 domain:happyon.jp
 domain:hjholdings.jp
-domain:hulu.jp
 domain:prod.hjholdings.tv
 domain:streaks.jp
 domain:yb.uncn.jp
@@ -304,104 +301,32 @@ domain:japronx.net
 domain:japronx.tv
 domain:japronx.vip
 domain:kfs.io
-domain:kkbox.com
-domain:kkbox.com.tw
-full:kktv-theater.kk.stream
-domain:kktv.com.tw
-domain:kktv.me
-full:litvfreemobile-hichannel.cdn.hinet.net
-domain:litv.tv
-full:d3c7rimkq79yfu.cloudfront.net
-domain:d3c7rimkq79yfu.cloudfront.net
-domain:linetv.tw
-domain:profile.line-scdn.net
-full:d349g9zuie06uo.cloudfront.net
 domain:channel5.com
 domain:my5.tv
-full:mytvsuperlimited.hb.omtrdc.net
-full:mytvsuperlimited.sc.omtrdc.net
-domain:mytvsuper.com
-domain:tvb.com
-full:netflix.com.edgesuite.net
-domain:fast.com
-domain:netflix.com
-domain:netflix.net
-domain:netflixdnstest0.com
-domain:netflixdnstest1.com
-domain:netflixdnstest2.com
-domain:netflixdnstest3.com
-domain:netflixdnstest4.com
-domain:netflixdnstest5.com
-domain:netflixdnstest6.com
-domain:netflixdnstest7.com
-domain:netflixdnstest8.com
-domain:netflixdnstest9.com
-domain:nflxext.com
-domain:nflximg.com
-domain:nflximg.net
-domain:nflxso.net
-domain:nflxvideo.net
 domain:dmc.nico
 domain:nicovideo.jp
 domain:nimg.jp
-domain:pbs.org
 domain:pandora.com
 domain:phncdn.com
 domain:phprcdn.com
-domain:pornhub.com
-domain:pornhubpremium.com
 domain:qobuz.com
 domain:p-cdn.us
 domain:sndcdn.com
 domain:soundcloud.com
-domain:pscdn.co
-domain:scdn.co
-domain:spoti.fi
-domain:spotify.com
-domain:spotifycdn.com
-domain:spotifycdn.net
 domain:tidal-cms.s3.amazonaws.com
 domain:tidal.com
 domain:tidalhifi.com
 full:hamifans.emome.net
 domain:skyking.com.tw
-domain:byteoversea.com
-domain:ibytedtos.com
-domain:ipstatp.com
-domain:muscdn.com
-domain:musical.ly
-domain:tik-tokapi.com
-domain:tiktok.com
-domain:tiktokcdn.com
-domain:tiktokv.com
-domain:jtvnw.net
-domain:ttvnw.net
-domain:twitch.tv
-domain:twitchcdn.net
-full:api.viu.now.com
-full:d1k2us671qcoau.cloudfront.net
-full:d2anahhhmp1ffz.cloudfront.net
-full:dfp6rglgjqszk.cloudfront.net
 domain:bootstrapcdn.com
-domain:cloudfront.net
 domain:cognito-identity.us-east-1.amazonaws.com
 domain:firebaseio.com
 domain:jwpcdn.com
 domain:jwplayer.com
 domain:mobileanalytics.us-east-1.amazonaws.com
-domain:nowe.com
-domain:viu.com
-domain:viu.now.com
-domain:viu.tv
-full:youtubei.googleapis.com
-full:yt3.ggpht.com
-domain:googlevideo.com
-domain:gvt2.com
-domain:youtu.be
-domain:youtube.com
-domain:ytimg.com
 full:music.youtube.com
 '
+	option ip_list 'geoip:netflix'
 
 config shunt_rules 'OneDrive'
 	option remarks '微软OneDrive'
@@ -424,6 +349,7 @@ domain:v2ex.com
 domain:golang.org
 domain:go.dev
 domain:sspanel.net
+domain:auvpn.net
 '
 	option ip_list '149.154.160.0/20
 91.108.4.0/22
