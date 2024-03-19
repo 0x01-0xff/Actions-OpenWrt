@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2024-03-10 14:57
+# 2024-03-20 02:25
 #
 # Modify APP Config
 #
@@ -18,6 +18,11 @@ SC_FEEDS_NAME="subconverter"
 CURL_PARAMS="curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2"
 #
 #######################################
+
+# **** TMP Update v2ray-core ****
+V2RAYCORE_MAKEFILE="feeds/${PW_PKG_FEEDS_NAME}/v2ray-core/Makefile"
+sed -i 's/=5\.14\.1/=5\.15\.1/g' $V2RAYCORE_MAKEFILE
+sed -i 's/51315ec10764a24e6acafa49763307c03eb916205c5d7eb778edb579b4f2e844/461a65a1675f17ad95a2a5ddf0b016247a34aa376ed1738c143e7c6603ab4abd/g' $V2RAYCORE_MAKEFILE
 
 # **** Update golang ****
 echo ">> Replace golang up to date"
