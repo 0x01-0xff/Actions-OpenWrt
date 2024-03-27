@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2024-03-27 17:48
+# 2024-03-28 02:27
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -21,7 +21,7 @@ env:
   FEEDS_CONF: feeds.conf.default
   CONFIG_FILE: 22.03.6.x86.config
   SYS_BASE_PARAM: Basic-Parameters.sh
-  ADD_FEEDS_CONF: Add-Feeds-Conf.sh
+  ADD_FEEDS_CONF: Add-Feeds-Conf-low.sh
   MOD_APP_CONF: Modify-APP-Conf.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
@@ -120,6 +120,12 @@ jobs:
     - name: Update feeds
       run: |
         cd $CUR_OP_DIR
+        mkdir new_packages
+        mkdir -p feeds/packages/lang
+        git clone https://git.openwrt.org/feed/packages.git new_packages
+        cp -r new_packages/lang/rust feeds/packages/lang/
+        [ -e feeds/packages/lang/rust ] && echo "[rust] DIR done."
+        rm -rf new_packages
         ./scripts/feeds update -a
 
     - name: Load custom modify
