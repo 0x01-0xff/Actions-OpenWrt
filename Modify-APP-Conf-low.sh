@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # By Huson
-# 2024-03-27 09:19
+# 2024-03-27 09:42
 #
 # Modify APP Config Low
 #
@@ -21,8 +21,8 @@ CURL_PARAMS="curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 
 
 # **** Downgrade shadowsocks-rust ****
 SSRUST_MAKEFILE="feeds/${PW_PKG_FEEDS_NAME}/shadowsocks-rust/Makefile"
-sed -i 's/=1\.18\.2/=1\.17\.2/g' $SSRUST_MAKEFILE
-sed -i 's/b772792e2d3f8ccc3a5d5255bfc65b85801b97e1139bbb0e50d39a91fb7d9e61/79d3d5204fad725bd2712f29066e71d14a329c3ea956b708cb6ea64bb0316a0b/g' $SSRUST_MAKEFILE
+sed -i 's/^PKG_VERSION:=.*\..*\..*$/PKG_VERSION:=1\.16\.2/g' $SSRUST_MAKEFILE
+sed -i 's/^PKG_HASH:=.*$/PKG_HASH:=04fb797d8d04b8af9c4746ab9c1d659a3575a677892c2d5d9194a4b0e210e2ab/g' $SSRUST_MAKEFILE
 
 # **** Update golang ****
 echo ">> Replace golang up to date"
