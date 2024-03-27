@@ -21,8 +21,8 @@ CURL_PARAMS="curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 
 
 # **** Downgrade shadowsocks-rust ****
 SSRUST_MAKEFILE="feeds/${PW_PKG_FEEDS_NAME}/shadowsocks-rust/Makefile"
-sed -i 's/^PKG_VERSION:=.*\..*\..*$/PKG_VERSION:=1\.16\.2/g' $SSRUST_MAKEFILE
-sed -i 's/^PKG_HASH:=.*$/PKG_HASH:=04fb797d8d04b8af9c4746ab9c1d659a3575a677892c2d5d9194a4b0e210e2ab/g' $SSRUST_MAKEFILE
+sed -i 's/^PKG_VERSION:=.*\..*\..*$/PKG_VERSION:=1\.18\.1/g' $SSRUST_MAKEFILE
+sed -i 's/^PKG_HASH:=.*$/PKG_HASH:=c2e1d8838e4578c0a6b0de6e1da00e9ece2d780dc452117fd109bb091e5d106f/g' $SSRUST_MAKEFILE
 
 # **** Update golang ****
 echo ">> Replace golang up to date"
