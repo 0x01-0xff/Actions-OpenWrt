@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2024-03-27 09:27
+# 2024-03-27 15:31
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -19,10 +19,10 @@ env:
   MY_WORK_HOME: workhome
   GET_ARCH: amd64
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: h_x86.config
+  CONFIG_FILE: 22.03.6.x86.config
   SYS_BASE_PARAM: Basic-Parameters.sh
   ADD_FEEDS_CONF: Add-Feeds-Conf-low.sh
-  MOD_APP_CONF: Modify-APP-Conf-low.sh
+  MOD_APP_CONF: Modify-APP-Conf.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
