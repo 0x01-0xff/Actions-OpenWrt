@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2024-03-27 15:31
+# 2024-03-27 16:27
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -118,7 +118,13 @@ jobs:
         ${GITHUB_WORKSPACE}/${ADD_FEEDS_CONF}
 
     - name: Update feeds
-      run: cd $CUR_OP_DIR && ./scripts/feeds update -a
+      run: |
+        cd $CUR_OP_DIR && ./scripts/feeds update -a
+        echo "Add rust DIR"
+        sudo mkdir new_packages
+        git clone https://git.openwrt.org/feed/packages.git new_packages
+        sudo cp -r new_packages/lang/rust feed/packages/lang/
+        sudo rm -rf new_packages
 
     - name: Load custom modify
       run: |
