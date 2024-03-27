@@ -121,10 +121,11 @@ jobs:
       run: |
         cd $CUR_OP_DIR && ./scripts/feeds update -a
         echo "Add rust DIR"
-        sudo mkdir new_packages
+        mkdir new_packages
+      #  sudo chown ${USER}:${GROUPS} new_packages
         git clone https://git.openwrt.org/feed/packages.git new_packages
-        sudo cp -r new_packages/lang/rust feed/packages/lang/
-        sudo rm -rf new_packages
+        cp -r new_packages/lang/rust feed/packages/lang/
+        rm -rf new_packages
 
     - name: Load custom modify
       run: |
