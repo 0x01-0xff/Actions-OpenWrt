@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2024-03-28 03:12
+# 2024-03-28 10:21
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -121,11 +121,8 @@ jobs:
       run: |
         cd $CUR_OP_DIR
         ./scripts/feeds update -a
-        mkdir new_packages
-        git clone https://git.openwrt.org/feed/packages.git new_packages
-        cp -r new_packages/lang/rust feeds/packages/lang/
-        [ -e feeds/packages/lang/rust ] && echo "[rust] DIR done."
-        rm -rf new_packages
+        rm -rf feeds/passwall_pkg/shadowsocks-rust/Makefile feeds/passwall_pkg.index feeds/passwall_pkg.targetindex
+        curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://raw.githubusercontent.com/sbwml/openwrt_helloworld/v5/shadowsocks-rust/Makefile -o feeds/passwall_pkg/shadowsocks-rust/Makefile 2>&1
         ./scripts/feeds update -a
 
     - name: Load custom modify
