@@ -133,7 +133,7 @@ jobs:
     - name: Update feeds
       run: |
         cd $CUR_OP_DIR && ./scripts/feeds update -a
-        cd passwall_pkg
+        cd feeds/passwall_pkg
         git reset --hard 1946200
 
     - name: Load custom modify
