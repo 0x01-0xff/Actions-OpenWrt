@@ -19,6 +19,14 @@ CURL_PARAMS="curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 
 #
 #######################################
 
+# **** tmp get olded passwall paceages ****
+echo ">> Replace passwall paceages"
+rm -rf feeds/passwall_pkg
+git clone https://github.com/xiaorouji/openwrt-passwall-packages.git feeds/passwall_pkg
+cd feeds/passwall_pkg
+git reset --hard 1946200
+cd ../..
+
 # **** TMP Update v2ray-core ****
 #V2RAYCORE_MAKEFILE="feeds/${PW_PKG_FEEDS_NAME}/v2ray-core/Makefile"
 #sed -i 's/=5\.14\.1/=5\.15\.1/g' $V2RAYCORE_MAKEFILE
