@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2024-03-24 11:24
+# 2024-04-09 02:00
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -19,9 +19,10 @@ env:
   MY_WORK_HOME: workhome
   GET_ARCH: amd64
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: h_x86.config
+  CONFIG_FILE: normal_x86.config
   SYS_BASE_PARAM: Basic-Parameters.sh
   ADD_FEEDS_CONF: Add-Feeds-Conf.sh
+  TMP_CHANGE: Temp-Change.sh
   MOD_APP_CONF: Modify-APP-Conf.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
@@ -137,9 +138,12 @@ jobs:
       run: |
         [ -e files ] && cp -r files ${CUR_OP_DIR}/files
         [ -e $INSET_FILES_DIR ] && cp -r $INSET_FILES_DIR ${CUR_OP_DIR}/${INSET_FILES_DIR}
-        chmod +x $MOD_APP_CONF
+        chmod +x $MOD_APP_CONF $TMP_CHANGE
         cd $CUR_OP_DIR
+        ${GITHUB_WORKSPACE}/${TMP_CHANGE} $INSET_FILES_DIR $GET_ARCH
         ${GITHUB_WORKSPACE}/${MOD_APP_CONF} $INSET_FILES_DIR $GET_ARCH
+        echo ">> CleanUp"
+        rm -rf $INSET_FILES_DIR >/dev/null 2>&1
 
     - name: Install feeds
       run: cd $CUR_OP_DIR && ./scripts/feeds install -a
