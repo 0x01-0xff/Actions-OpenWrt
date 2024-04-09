@@ -91,6 +91,6 @@ replaceNETpackages() {
         fi
     done
 }
-replaceNETpackages ${PW_PKG_FEEDS_NAME}
 replaceNETpackages ${SSR_FEEDS_NAME}
+replaceNETpackages ${PW_PKG_FEEDS_NAME}
 
