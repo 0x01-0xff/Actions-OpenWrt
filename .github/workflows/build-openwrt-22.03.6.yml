@@ -1,6 +1,6 @@
 #
 # By Huson
-# 2024-03-28 10:22
+# 2024-04-09 02:00
 #
 # Description: Build OpenWrt using GitHub Actions
 #
@@ -19,9 +19,10 @@ env:
   MY_WORK_HOME: workhome
   GET_ARCH: amd64
   FEEDS_CONF: feeds.conf.default
-  CONFIG_FILE: 22.03.6.x86.config
+  CONFIG_FILE: 22.03.6_x86.config
   SYS_BASE_PARAM: Basic-Parameters.sh
-  ADD_FEEDS_CONF: Add-Feeds-Conf-low.sh
+  ADD_FEEDS_CONF: Add-Feeds-Conf-Older.sh
+  TMP_CHANGE: Temp-Change-Older.sh
   MOD_APP_CONF: Modify-APP-Conf.sh
   UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
@@ -118,20 +119,18 @@ jobs:
         ${GITHUB_WORKSPACE}/${ADD_FEEDS_CONF}
 
     - name: Update feeds
-      run: |
-        cd $CUR_OP_DIR
-        ./scripts/feeds update -a
-        rm -rf feeds/passwall_pkg/shadowsocks-rust/Makefile feeds/passwall_pkg.index feeds/passwall_pkg.targetindex
-        curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 https://raw.githubusercontent.com/sbwml/openwrt_helloworld/v5/shadowsocks-rust/Makefile -o feeds/passwall_pkg/shadowsocks-rust/Makefile 2>&1
-        ./scripts/feeds update -a
+      run: cd $CUR_OP_DIR && ./scripts/feeds update -a
 
     - name: Load custom modify
       run: |
         [ -e files ] && cp -r files ${CUR_OP_DIR}/files
         [ -e $INSET_FILES_DIR ] && cp -r $INSET_FILES_DIR ${CUR_OP_DIR}/${INSET_FILES_DIR}
-        chmod +x $MOD_APP_CONF
+        chmod +x $MOD_APP_CONF $TMP_CHANGE
         cd $CUR_OP_DIR
+        ${GITHUB_WORKSPACE}/${TMP_CHANGE} $INSET_FILES_DIR $GET_ARCH
         ${GITHUB_WORKSPACE}/${MOD_APP_CONF} $INSET_FILES_DIR $GET_ARCH
+        echo ">> CleanUp"
+        rm -rf $INSET_FILES_DIR >/dev/null 2>&1
 
     - name: Install feeds
       run: cd $CUR_OP_DIR && ./scripts/feeds install -a
