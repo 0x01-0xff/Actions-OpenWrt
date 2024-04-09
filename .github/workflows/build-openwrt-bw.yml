@@ -1,0 +1,234 @@
+#
+# By Huson
+# 2024-04-09 02:00
+#
+# Description: Build OpenWrt using GitHub Actions
+#
+
+name: Build OpenWrt x86 Backwardness
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+
+env:
+  REPO_URL: https://git.openwrt.org/openwrt/openwrt.git
+  REPO_TAG: v23.05.3
+  CUR_OP_DIR: openwrt
+  INSET_FILES_DIR: InsetFiles
+  MY_WORK_HOME: workhome
+  GET_ARCH: amd64
+  FEEDS_CONF: feeds.conf.default
+  CONFIG_FILE: normal_x86.config
+  SYS_BASE_PARAM: Basic-Parameters.sh
+  ADD_FEEDS_CONF: Add-Feeds-Conf-Backwardness.sh
+  TMP_CHANGE: Temp-Change-Backwardness.sh
+  MOD_APP_CONF: Modify-APP-Conf.sh
+  UPLOAD_BIN_DIR: false
+  UPLOAD_FIRMWARE: true
+  UPLOAD_RELEASE: true
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Check Server Performance
+      run: |
+        echo -e "已知CPU型号(降序): 7763，8370C，8272CL，8171M，E5-2673\n"
+        echo "--------------------------CPU信息--------------------------"
+        echo "CPU物理数量: $(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
+        echo "CPU核心数量: $(nproc)"
+        echo -e "CPU型号信息:$(cat /proc/cpuinfo | grep -m1 name | awk -F: '{print $2}')\n"
+        echo "--------------------------内存信息--------------------------"
+        echo "已安装内存详细信息:"
+        echo -e "$(sudo lshw -short -C memory | grep GiB)\n"
+        echo "--------------------------硬盘信息--------------------------"
+        echo "硬盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
+
+    - name: "Optimize Disk Space"
+      uses: "hugoalh/disk-space-optimizer-ghaction@v0.8.0"
+      with:
+        operate_sudo: "True"
+        general_include: ".+"
+        general_exclude: |-
+          ^GCC$
+          ^G\+\+$
+          Clang
+          LLVM
+        docker_include: ".+"
+        docker_prune: "True"
+        docker_clean: "True"
+        apt_prune: "True"
+        apt_clean: "True"
+        homebrew_prune: "True"
+        homebrew_clean: "True"
+        npm_prune: "True"
+        npm_clean: "True"
+        os_swap: "True"
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        echo "> remove packages"
+        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d /usr/local/lib/android /opt/ghc \
+        /usr/share/dotnet /usr/local/graalvm /usr/local/.ghcup \
+        /usr/local/share/powershell /usr/local/share/chromium /usr/local/lib/node_modules /opt/hostedtoolcache/CodeQL
+        sudo docker image prune --all --force
+        sudo -E apt-get -qq purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php* mongodb* dotnet* moby* snap* docker* hhvm* aspnetcore* adoptopenjdk* || true
+        sudo -E apt-get -qq install pkg-config
+        sudo -E apt-get -qq update
+        echo "> install packages"
+        sudo -E apt-get -qq install ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib git golang-go gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp nano ninja-build p7zip p7zip-full patch pkgconf python3 python3-pip libpython3-dev qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+        sudo -E systemctl daemon-reload
+        sudo -E apt-get -qq autoremove --purge
+        echo "> clean"
+        sudo -E apt-get -qq clean
+        echo "> set time and working-directory"
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /${MY_WORK_HOME}
+        sudo chown ${USER}:${GROUPS} /${MY_WORK_HOME}
+
+    - name: Clone source code
+      working-directory: /${{ env.MY_WORK_HOME }}
+      run: |
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
+        df -hT $PWD
+        echo "======================="
+        git clone -b $REPO_TAG --depth=1 $REPO_URL $CUR_OP_DIR
+        ln -sf /${MY_WORK_HOME}/${CUR_OP_DIR} ${GITHUB_WORKSPACE}/${CUR_OP_DIR}
+
+    - name: Modify system basic parameters
+      run: |
+        chmod +x $SYS_BASE_PARAM
+        cd $CUR_OP_DIR
+        ${GITHUB_WORKSPACE}/${SYS_BASE_PARAM}
+
+    - name: Load custom feeds
+      run: |
+        [ -e $FEEDS_CONF ] && cp $FEEDS_CONF ${CUR_OP_DIR}/feeds.conf.default
+        chmod +x $ADD_FEEDS_CONF
+        cd $CUR_OP_DIR
+        ${GITHUB_WORKSPACE}/${ADD_FEEDS_CONF}
+
+    - name: Update feeds
+      run: cd $CUR_OP_DIR && ./scripts/feeds update -a
+
+    - name: Load custom modify
+      run: |
+        [ -e files ] && cp -r files ${CUR_OP_DIR}/files
+        [ -e $INSET_FILES_DIR ] && cp -r $INSET_FILES_DIR ${CUR_OP_DIR}/${INSET_FILES_DIR}
+        chmod +x $MOD_APP_CONF $TMP_CHANGE
+        cd $CUR_OP_DIR
+        ${GITHUB_WORKSPACE}/${TMP_CHANGE} $INSET_FILES_DIR $GET_ARCH
+        ${GITHUB_WORKSPACE}/${MOD_APP_CONF} $INSET_FILES_DIR $GET_ARCH
+        echo ">> CleanUp"
+        rm -rf $INSET_FILES_DIR >/dev/null 2>&1
+
+    - name: Install feeds
+      run: cd $CUR_OP_DIR && ./scripts/feeds install -a
+
+    - name: Load .config
+      run: |
+        [ -e $CONFIG_FILE ] && cp $CONFIG_FILE ${CUR_OP_DIR}/.config
+
+    - name: Download package
+      id: package
+      run: |
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
+        df -hT $PWD
+        echo "======================="
+        cd $CUR_OP_DIR
+        make defconfig
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+
+    - name: Compile the firmware
+      id: compile
+      run: |
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
+        df -hT $PWD
+        echo "======================="
+        cd $CUR_OP_DIR
+        echo -e "$(nproc) thread compile"
+        make -j$(nproc) || make -j1 || make -j1 V=s
+        echo "status=success" >> $GITHUB_OUTPUT
+        grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
+        echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+
+    - name: Check space usage
+      if: (!cancelled())
+      run: |
+        echo "======================="
+        echo "Space usage:"
+        echo "======================="
+        df -hT
+        echo "======================="
+
+    - name: Upload bin directory
+      uses: actions/upload-artifact@main
+      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+      with:
+        name: OpenWrt_${{ env.REPO_TAG }}_bin_${{ env.GET_ARCH }}${{ env.FILE_DATE }}
+        path: ${{ env.CUR_OP_DIR }}/bin
+
+    - name: Remove packages directory
+      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+      run: |
+        cd openwrt/bin/targets/*/*
+        rm -rf packages
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+
+    - name: Organize files
+      id: organize
+      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+      run: |
+        cd openwrt/bin
+        echo "FIRMWARE_bin=$PWD" >> $GITHUB_ENV
+        echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: Upload firmware directory
+      uses: actions/upload-artifact@main
+      if: steps.organize.outputs.status == 'success' && !cancelled()
+      with:
+        name: OpenWrt_${{ env.REPO_TAG }}_bin_${{ env.GET_ARCH }}${{ env.FILE_DATE }}
+        path: ${{ env.FIRMWARE_bin }}
+
+    - name: Generate release tag
+      id: tag
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      run: |
+        #echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+        echo "release_tag=OpenWrt-${REPO_TAG}-$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+        touch release.txt
+        [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
+        echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@master
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        body_path: release.txt
+        files: ${{ env.FIRMWARE }}/*
+
+    - name: Delete workflow runs
+      uses: Mattraks/delete-workflow-runs@main
+      with:
+        retain_days: 0
+        keep_minimum_runs: 2
