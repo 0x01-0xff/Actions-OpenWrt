@@ -50,5 +50,5 @@ cd ../..
 # **** Update golang ****
 echo ">> Replace golang up to date"
 rm -rf feeds/packages/lang/golang
-git clone https://github.com/sbwml/packages_lang_golang -b 20.x feeds/packages/lang/golang
+git clone https://github.com/sbwml/packages_lang_golang -b 21.x feeds/packages/lang/golang
 
