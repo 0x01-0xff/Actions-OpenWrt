@@ -19,19 +19,27 @@ CURL_PARAMS="curl -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 
 #
 #######################################
 
-# **** get olded passwall packages ****
-echo ">> Set older passwall packages"
-rm -rf feeds/${PW_PKG_FEEDS_NAME}
-git clone https://github.com/xiaorouji/openwrt-passwall-packages.git feeds/${PW_PKG_FEEDS_NAME}
-cd feeds/${PW_PKG_FEEDS_NAME}
-git reset --hard c189a68
+# **** get older passwall 早期的tag号里只有packages，所以只能使用commit指针调取旧版本v4.69-4 ****
+echo ">> Set older passwall"
+rm -rf feeds/${PW_FEEDS_NAME}
+git clone https://github.com/xiaorouji/openwrt-passwall.git feeds/${PW_FEEDS_NAME}
+cd feeds/${PW_FEEDS_NAME}
+git reset --hard d1e6182
 cd ../..
+
+# **** get older passwall packages ****
+#echo ">> Set older passwall packages"
+#rm -rf feeds/${PW_PKG_FEEDS_NAME}
+#git clone https://github.com/xiaorouji/openwrt-passwall-packages.git feeds/${PW_PKG_FEEDS_NAME}
+#cd feeds/${PW_PKG_FEEDS_NAME}
+#git reset --hard c189a68
+#cd ../..
 
 # Fix shadowsocks-rust build error
 #rm -rf feeds/${PW_PKG_FEEDS_NAME}/shadowsocks-rust/Makefile
 #$CURL_PARAMS https://raw.githubusercontent.com/sbwml/openwrt_helloworld/v5/shadowsocks-rust/Makefile -o feeds/${PW_PKG_FEEDS_NAME}/shadowsocks-rust/Makefile 2>&1
 
-# **** get olded helloworld ****
+# **** get older helloworld ****
 echo ">> Set older helloworld"
 rm -rf feeds/${SSR_FEEDS_NAME}
 git clone https://github.com/fw876/helloworld.git feeds/${SSR_FEEDS_NAME}
