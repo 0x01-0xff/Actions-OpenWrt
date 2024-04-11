@@ -138,7 +138,7 @@ jobs:
     - name: Load .config
       run: |
         [ -e $CONFIG_FILE ] && cp $CONFIG_FILE ${CUR_OP_DIR}/.config
-        sed -i 's/sing-box//g' ${CUR_OP_DIR}/.config
+        sed -i '/sing-box/d' ${CUR_OP_DIR}/.config
 
     - name: Download package
       id: package
