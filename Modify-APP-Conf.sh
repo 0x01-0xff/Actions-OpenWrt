@@ -71,6 +71,7 @@ GEODAT_MAKEFILE="feeds/${PW_PKG_FEEDS_NAME}/v2ray-geodata/Makefile"
 GEO_LAST_VER=$(curl -Ls "https://api.github.com/repos/Loyalsoldier/v2ray-rules-dat/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 GEOIP_HASH=$(curl -Ls "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/${GEO_LAST_VER}/geoip.dat.sha256sum" | awk '{print $1}')
 GEOSITE_HASH=$(curl -Ls "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/${GEO_LAST_VER}/geosite.dat.sha256sum" | awk '{print $1}')
+echo "Version: ${GEO_LAST_VER}"
 sed -i "s/GEOIP_VER:=.*$/GEOIP_VER:=${GEO_LAST_VER}/g" $GEODAT_MAKEFILE
 sed -i "s/GEOSITE_VER:=.*$/GEOSITE_VER:=${GEO_LAST_VER}/g" $GEODAT_MAKEFILE
 sed -i 's/https:\/\/github\.com\/v2fly\/geoip\/releases\//https:\/\/github\.com\/Loyalsoldier\/v2ray-rules-dat\/releases\//g' $GEODAT_MAKEFILE
