@@ -88,7 +88,8 @@ config shunt_rules 'OpenAI'
 config shunt_rules 'Github'
 	option remarks 'Github'
 	option network 'tcp,udp'
-	option domain_list 'geosite:github'
+	option domain_list 'geosite:github
+regexp:(.*\.)?github([^.]*)?\.com$'
 
 config shunt_rules 'PayPal'
 	option remarks 'PayPal'
