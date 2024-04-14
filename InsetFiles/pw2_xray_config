@@ -89,6 +89,7 @@ config shunt_rules 'Github'
 	option remarks 'Github'
 	option network 'tcp,udp'
 	option domain_list 'geosite:github
+full:github.global.ssl.fastly.net
 regexp:(.*\.)?github([^.]*)?\.com$'
 
 config shunt_rules 'PayPal'
