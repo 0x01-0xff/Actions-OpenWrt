@@ -80,17 +80,20 @@ sed -i 's/=dlc\.dat/=geosite\.dat/g' $GEODAT_MAKEFILE
 sed -i "/define Download\/geoip/,/^  HASH:=.*$/ s/^  HASH:=.*$/  HASH:=${GEOIP_HASH}/" $GEODAT_MAKEFILE
 sed -i "/define Download\/geosite/,/^  HASH:=.*$/ s/^  HASH:=.*$/  HASH:=${GEOSITE_HASH}/" $GEODAT_MAKEFILE
 
-echo ">> Replace native packages"
-replaceNETpackages() {
-    local _SRC_PACKAGE=$1
-    for i in `ls feeds/${_SRC_PACKAGE}`; do
-        if [ -e feeds/packages/net/${i} ]; then
-           #rm -rf feeds/packages/net/${i}
-           #echo "deleted [${i}]"
-           cp -rf feeds/${_SRC_PACKAGE}/${i} feeds/packages/net/${i}
-           echo "replace [${i}] from ${_SRC_PACKAGE}."
+echo ">> Replace packages"
+replacePackages() {
+    local _SRC_PKG_LOCAL=$1
+    local _DST_PKG_LOCAL=$2
+    for i in `ls ${_SRC_PKG_LOCAL}`; do
+        if [ -e ${_DST_PKG_LOCAL}/${i} ]; then
+           #rm -rf ${_DST_PKG_LOCAL}/${i}
+           #echo "deleted [${_DST_PKG_LOCAL}/${i}]"
+           cp -rf ${_SRC_PKG_LOCAL}/${i} ${_DST_PKG_LOCAL}/${i}
+           echo "replace [${_DST_PKG_LOCAL}/${i}] from ${_SRC_PKG_LOCAL}."
         fi
     done
 }
-replaceNETpackages ${SSR_FEEDS_NAME}
-replaceNETpackages ${PW_PKG_FEEDS_NAME}
+replacePackages feeds/${PW_PKG_FEEDS_NAME} feeds/${SSR_FEEDS_NAME}
+replacePackages feeds/${PW_PKG_FEEDS_NAME} feeds/packages/net
+replacePackages feeds/${SSR_FEEDS_NAME} feeds/packages/net
+
