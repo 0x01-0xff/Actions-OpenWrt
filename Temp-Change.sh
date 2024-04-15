@@ -28,3 +28,13 @@ sed -i 's/51315ec10764a24e6acafa49763307c03eb916205c5d7eb778edb579b4f2e844/461a6
 echo ">> Replace golang up to date"
 rm -rf feeds/packages/lang/golang
 git clone https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang
+
+# **** Sing-box GEODATA ****
+SB_GEO_DIR="files/usr/share/singbox"
+mkdir -p $SB_GEO_DIR
+#$CURL_PARAMS https://github.com/SagerNet/sing-geosite/releases/latest/download/geosite.db -o ${SB_GEO_DIR}/geosite.db 2>&1
+#$CURL_PARAMS https://github.com/SagerNet/sing-geoip/releases/latest/download/geoip.db -o ${SB_GEO_DIR}/geoip.db 2>&1
+$CURL_PARAMS https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db -o ${SB_GEO_DIR}/geosite.db 2>&1
+$CURL_PARAMS https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.db -o ${SB_GEO_DIR}/geoip.db 2>&1
+sudo chmod 644 ${SB_GEO_DIR}/geosite.db ${SB_GEO_DIR}/geoip.db
+
