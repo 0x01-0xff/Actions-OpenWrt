@@ -79,6 +79,12 @@ sed -i 's/https:\/\/github\.com\/v2fly\/domain-list-community\/releases\//https:
 sed -i 's/=dlc\.dat/=geosite\.dat/g' $GEODAT_MAKEFILE
 sed -i "/define Download\/geoip/,/^  HASH:=.*$/ s/^  HASH:=.*$/  HASH:=${GEOIP_HASH}/" $GEODAT_MAKEFILE
 sed -i "/define Download\/geosite/,/^  HASH:=.*$/ s/^  HASH:=.*$/  HASH:=${GEOSITE_HASH}/" $GEODAT_MAKEFILE
+# **** v2ray GEODATA ****
+GEODAT_DIR="files/usr/share/v2ray"
+mkdir -p $GEODAT_DIR
+$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/${GEO_LAST_VER}/geosite.dat -o ${GEODAT_DIR}/geosite.dat 2>&1
+$CURL_PARAMS https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/${GEO_LAST_VER}/geoip.dat -o ${GEODAT_DIR}/geoip.dat 2>&1
+sudo chmod 644 ${GEODAT_DIR}/geosite.dat ${GEODAT_DIR}/geoip.dat
 
 echo ">> Replace packages"
 replacePackages() {
@@ -86,8 +92,6 @@ replacePackages() {
     local _DST_PKG_LOCAL=$2
     for i in `ls ${_SRC_PKG_LOCAL}`; do
         if [ -e ${_DST_PKG_LOCAL}/${i} ]; then
-           #rm -rf ${_DST_PKG_LOCAL}/${i}
-           #echo "deleted [${_DST_PKG_LOCAL}/${i}]"
            cp -rf ${_SRC_PKG_LOCAL}/${i} ${_DST_PKG_LOCAL}/${i}
            echo "replace [${_DST_PKG_LOCAL}/${i}] from ${_SRC_PKG_LOCAL}."
         fi
