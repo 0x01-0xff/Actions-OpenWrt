@@ -36,13 +36,30 @@ cat ${INSET_FILES_DIR}/pw2_xray_config >> $PW2_DEF_CONF_FILE
 echo ">> Implantation new rules lists to passwall"
 PW_RULES_DIR="feeds/${PW_FEEDS_NAME}/luci-app-passwall/root/usr/share/passwall/rules"
 if [ ! -e $PW_RULES_DIR ]; then mkdir -p $PW_RULES_DIR; fi
-rm -f ${PW_RULES_DIR}/gfwlist ${PW_RULES_DIR}/chnroute ${PW_RULES_DIR}/chnroute6 ${PW_RULES_DIR}/chnlist
-$CURL_PARAMS https://fastly.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/gfw.txt -o ${PW_RULES_DIR}/gfwlist 2>&1
-[ -e ${PW_RULES_DIR}/gfwlist ] && echo "gfwlist done."
-$CURL_PARAMS https://ispip.clang.cn/all_cn.txt -o ${PW_RULES_DIR}/chnroute 2>&1
-[ -e ${PW_RULES_DIR}/chnroute ] && echo "chnroute done."
-$CURL_PARAMS https://ispip.clang.cn/all_cn_ipv6.txt -o ${PW_RULES_DIR}/chnroute6 2>&1
-[ -e ${PW_RULES_DIR}/chnroute6 ] && echo "chnroute6 done."
+$CURL_PARAMS https://fastly.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/gfw.txt -o ${PW_RULES_DIR}/gfwlist_tmp 2>&1
+if [ -e ${PW_RULES_DIR}/gfwlist_tmp ]; then
+    echo "gfwlist done."
+    rm -f ${PW_RULES_DIR}/gfwlist
+    mv ${PW_RULES_DIR}/gfwlist_tmp ${PW_RULES_DIR}/gfwlist >/dev/null 2>&1
+else
+    echo "make gfwlist error!"
+fi
+$CURL_PARAMS https://ispip.clang.cn/all_cn.txt -o ${PW_RULES_DIR}/chnroute_tmp 2>&1
+if [ -e ${PW_RULES_DIR}/chnroute_tmp ]; then
+    echo "chnroute done."
+    rm -f ${PW_RULES_DIR}/chnroute
+    mv ${PW_RULES_DIR}/chnroute_tmp ${PW_RULES_DIR}/chnroute >/dev/null 2>&1
+else
+    echo "make chnroute error!"
+fi
+$CURL_PARAMS https://ispip.clang.cn/all_cn_ipv6.txt -o ${PW_RULES_DIR}/chnroute6_tmp 2>&1
+if [ -e ${PW_RULES_DIR}/chnroute6_tmp ]; then
+    echo "chnroute6 done."
+    rm -f ${PW_RULES_DIR}/chnroute6
+    mv ${PW_RULES_DIR}/chnroute6_tmp ${PW_RULES_DIR}/chnroute6 >/dev/null 2>&1
+else
+    echo "make chnroute6 error!"
+fi
 $CURL_PARAMS https://fastly.jsdelivr.net/gh/felixonmars/dnsmasq-china-list/accelerated-domains.china.conf -o ${PW_RULES_DIR}/chnlist_tmp1 2>&1
 $CURL_PARAMS https://fastly.jsdelivr.net/gh/felixonmars/dnsmasq-china-list/apple.china.conf -o ${PW_RULES_DIR}/chnlist_tmp2 2>&1
 $CURL_PARAMS https://fastly.jsdelivr.net/gh/felixonmars/dnsmasq-china-list/google.china.conf -o ${PW_RULES_DIR}/chnlist_tmp3 2>&1
@@ -50,17 +67,19 @@ mergeCHNlist() {
     local _GetFile=$1
     local _ListLine
     while read _ListLine; do
-        echo "${_ListLine}" | awk -F '/' '{if ($1=="server=") print $2}' >> ${PW_RULES_DIR}/chnlist
+        echo "${_ListLine}" | awk -F '/' '{if ($1=="server=") print $2}' >> ${PW_RULES_DIR}/chnlist_tmp
     done < ${PW_RULES_DIR}/${_GetFile}
 }
-mergeCHNlist chnlist_tmp1
-mergeCHNlist chnlist_tmp2
-mergeCHNlist chnlist_tmp3
-if [ -e ${PW_RULES_DIR}/chnlist ]; then
+if [ -e ${PW_RULES_DIR}/chnlist_tmp1 ]; then mergeCHNlist chnlist_tmp1; fi
+if [ -e ${PW_RULES_DIR}/chnlist_tmp2 ]; then mergeCHNlist chnlist_tmp2; fi
+if [ -e ${PW_RULES_DIR}/chnlist_tmp3 ]; then mergeCHNlist chnlist_tmp3; fi
+if [ -e ${PW_RULES_DIR}/chnlist_tmp ]; then
     echo "chnlist done."
-    sed -i '/^$/d' ${PW_RULES_DIR}/chnlist >/dev/null 2>&1
-    sort -u ${PW_RULES_DIR}/chnlist -o ${PW_RULES_DIR}/chnlist
-    rm -f ${PW_RULES_DIR}/chnlist_tmp*
+    rm -f ${PW_RULES_DIR}/chnlist
+    sed -i '/^$/d' ${PW_RULES_DIR}/chnlist_tmp >/dev/null 2>&1
+    sort -u ${PW_RULES_DIR}/chnlist_tmp -o ${PW_RULES_DIR}/chnlist_tmp
+    mv ${PW_RULES_DIR}/chnlist_tmp ${PW_RULES_DIR}/chnlist >/dev/null 2>&1
+    rm -f ${PW_RULES_DIR}/chnlist_tm*
 else
     echo "make chnlist error!"
 fi
@@ -100,4 +119,3 @@ replacePackages() {
 replacePackages feeds/${PW_PKG_FEEDS_NAME} feeds/${SSR_FEEDS_NAME}
 replacePackages feeds/${PW_PKG_FEEDS_NAME} feeds/packages/net
 replacePackages feeds/${SSR_FEEDS_NAME} feeds/packages/net
-
