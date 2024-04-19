@@ -41,6 +41,7 @@ if [ -e ${PW_RULES_DIR}/gfwlist_tmp ]; then
     echo "gfwlist done."
     rm -f ${PW_RULES_DIR}/gfwlist
     mv ${PW_RULES_DIR}/gfwlist_tmp ${PW_RULES_DIR}/gfwlist >/dev/null 2>&1
+    rm -f ${PW_RULES_DIR}/gfwlist_tm*
 else
     echo "make gfwlist error!"
 fi
