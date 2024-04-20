@@ -7,6 +7,7 @@ config nodes 'myshunt'
 	option CustomGroup 'nil'
 	option AD 'nil'
 	option BT '_direct'
+	option China '_direct'
 	option NeedUS 'policy_US'
 	option OpenAI 'policy_JP'
 	option Github 'policy_HK'
@@ -20,7 +21,6 @@ config nodes 'myshunt'
 	option Streaming 'policy_HK'
 	option OneDrive 'nil'
 	option GoogleAll 'policy_HK'
-	option China 'nil'
 	option BeBlocked 'policy_HK'
 	option QUIC '_blackhole'
 	option UDP 'nil'
@@ -73,6 +73,13 @@ config shunt_rules 'BT'
 	option remarks 'BT下载'
 	option network 'tcp,udp'
 	option protocol 'bittorrent'
+'
+
+config shunt_rules 'China'
+	option remarks '中国列表'
+	option network 'tcp,udp'
+	option domain_list 'geosite:cn'
+	option ip_list 'geoip:cn'
 	
 config shunt_rules 'NeedUS'
 	option remarks '指定美国'
@@ -380,13 +387,6 @@ domain:auvpn.net
 2001:4860:4860::8844
 2606:4700:4700::1111
 2606:4700:4700::1001
-'
-
-config shunt_rules 'China'
-	option remarks 'China'
-	option network 'tcp,udp'
-	option domain_list 'geosite:cn'
-	option ip_list 'geoip:cn'
 
 config shunt_rules 'QUIC'
 	option remarks 'QUIC'
