@@ -87,9 +87,13 @@ config shunt_rules 'OpenAI'
 config shunt_rules 'Github'
 	option remarks 'Github'
 	option network 'tcp,udp'
-	option domain_list 'geosite:github
-full:github.global.ssl.fastly.net
-regexp:(.*\.)?github([^.]*)?\.com$'
+	option domain_list 'regexp:(.*\.)?github([^.]*)?\.(com|io|dev|community|blog)$
+domain:atom.io
+domain:ghcr.io
+domain:git.io
+domain:dependabot.com
+domain:blob.core.windows.net
+full:github.global.ssl.fastly.net'
 
 config shunt_rules 'PayPal'
 	option remarks 'PayPal'
