@@ -81,13 +81,13 @@ config shunt_rules 'OpenAI'
 config shunt_rules 'Github'
 	option remarks 'Github'
 	option network 'tcp,udp'
-	option domain_list 'regexp:(.+\.)?github([^.]+)?\.(com|io|dev|community|blog)$
-domain:atom.io
+	option domain_list 'domain:atom.io
 domain:ghcr.io
 domain:git.io
 domain:dependabot.com
 domain:blob.core.windows.net
-full:github.global.ssl.fastly.net'
+full:github.global.ssl.fastly.net
+regexp:(.+\.)?github([^.]+)?\.(com|io|dev|community|blog)$'
 
 config shunt_rules 'PayPal'
 	option remarks 'PayPal'
@@ -169,7 +169,7 @@ domain:inter.iqiyi.com
 domain:inter.ptqy.gitv.tv
 domain:intl.iqiyi.com
 domain:iq.com
-regexp:^https?:\/\/int[\w-\.]+iqiyi\.com
+regexp:int[\w-\.]+iqiyi\.com
 domain:api.mob.app.letv.com
 domain:v.smtcdns.com
 domain:vv.video.qq.com
@@ -353,8 +353,6 @@ geosite:opensourceinsights
 geosite:polymer
 geosite:v8
 geosite:youtube
-regexp:(.+\.)?google\.[a-z]{2,3}(\.[a-z]{2})?$
-regexp:.+\.(and|chrome|dclk|gbiz|gle|gmail|goo|goog|google|guge|hangout|nexus|xn--flw351e|xn--qcka1pmc)$
 domain:0emm.com
 domain:1e100.net
 domain:1ucrs.com
@@ -449,6 +447,8 @@ domain:googl.com
 domain:google-access.net
 domain:google-syndication.com
 domain:google.berlin
+domain:google.com
+domain:google.com.hk
 domain:google.dev
 domain:google.net
 domain:google.org
@@ -629,6 +629,8 @@ domain:xn--gogl-1nd42e.com
 domain:xn--ngstr-lra8j.com
 domain:xplr.co
 domain:zukunftswerkstatt.de
+regexp:(.+\.)?google\.[a-z]{2,3}(\.[a-z]{2})?$
+regexp:.+\.(and|chrome|dclk|gbiz|gle|gmail|goo|goog|google|guge|hangout|nexus|xn--flw351e|xn--qcka1pmc)$
 '
 	option ip_list 'geoip:google'
 
@@ -639,8 +641,6 @@ config shunt_rules 'BeBlocked'
 domain:midjourney.com
 domain:d-id.com
 domain:v2ex.com
-domain:golang.org
-domain:go.dev
 domain:sspanel.net
 domain:auvpn.net
 '
@@ -685,7 +685,7 @@ config nodes 'policy_HK'
 	option balancingStrategy 'leastPing'
 	option useCustomProbeUrl '1'
 	option probeUrl 'https://www.google.com/generate_204'
-	option probeInterval '5m'
+	option probeInterval '30m'
 
 config nodes 'policy_JP'
 	option remarks '日本节点'
@@ -694,7 +694,7 @@ config nodes 'policy_JP'
 	option balancingStrategy 'leastPing'
 	option useCustomProbeUrl '1'
 	option probeUrl 'https://www.google.com/generate_204'
-	option probeInterval '5m'
+	option probeInterval '30m'
 
 config nodes 'policy_SG'
 	option remarks '新加坡节点'
@@ -703,7 +703,7 @@ config nodes 'policy_SG'
 	option balancingStrategy 'leastPing'
 	option useCustomProbeUrl '1'
 	option probeUrl 'https://www.google.com/generate_204'
-	option probeInterval '5m'
+	option probeInterval '30m'
 
 config nodes 'policy_KR'
 	option remarks '韩国节点'
@@ -712,7 +712,7 @@ config nodes 'policy_KR'
 	option balancingStrategy 'leastPing'
 	option useCustomProbeUrl '1'
 	option probeUrl 'https://www.google.com/generate_204'
-	option probeInterval '5m'
+	option probeInterval '30m'
 
 config nodes 'policy_TW'
 	option remarks '台湾节点'
@@ -721,7 +721,7 @@ config nodes 'policy_TW'
 	option balancingStrategy 'leastPing'
 	option useCustomProbeUrl '1'
 	option probeUrl 'https://www.google.com/generate_204'
-	option probeInterval '5m'
+	option probeInterval '30m'
 
 config nodes 'policy_US'
 	option remarks '美国节点'
@@ -730,7 +730,7 @@ config nodes 'policy_US'
 	option balancingStrategy 'leastPing'
 	option useCustomProbeUrl '1'
 	option probeUrl 'https://www.google.com/generate_204'
-	option probeInterval '5m'
+	option probeInterval '30m'
 
 config nodes 'policy_UK'
 	option remarks '英国节点'
@@ -739,7 +739,7 @@ config nodes 'policy_UK'
 	option balancingStrategy 'leastPing'
 	option useCustomProbeUrl '1'
 	option probeUrl 'https://www.google.com/generate_204'
-	option probeInterval '5m'
+	option probeInterval '30m'
 
 config nodes 'policy_LargeTraffic'
 	option remarks '大流量节点'
@@ -748,7 +748,7 @@ config nodes 'policy_LargeTraffic'
 	option balancingStrategy 'leastPing'
 	option useCustomProbeUrl '1'
 	option probeUrl 'https://www.google.com/generate_204'
-	option probeInterval '5m'
+	option probeInterval '30m'
 
 config nodes 'policy_Security'
 	option remarks '安全节点'
@@ -757,4 +757,4 @@ config nodes 'policy_Security'
 	option balancingStrategy 'leastPing'
 	option useCustomProbeUrl '1'
 	option probeUrl 'https://www.google.com/generate_204'
-	option probeInterval '5m'
+	option probeInterval '30m'
