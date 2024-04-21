@@ -81,7 +81,7 @@ config shunt_rules 'OpenAI'
 config shunt_rules 'Github'
 	option remarks 'Github'
 	option network 'tcp,udp'
-	option domain_list 'regexp:(.*\.)?github([^.]*)?\.(com|io|dev|community|blog)$
+	option domain_list 'regexp:(.+\.)?github([^.]+)?\.(com|io|dev|community|blog)$
 domain:atom.io
 domain:ghcr.io
 domain:git.io
@@ -353,7 +353,7 @@ geosite:opensourceinsights
 geosite:polymer
 geosite:v8
 geosite:youtube
-regexp:.*\.(and|chrome|dclk|gbiz|gle|gmail|goo|goog|google|guge|hangout|nexus|xn--flw351e|xn--qcka1pmc)$
+regexp:.+\.(and|chrome|dclk|gbiz|gle|gmail|goo|goog|google|guge|hangout|nexus|xn--flw351e|xn--qcka1pmc)$
 domain:google.ad
 domain:google.ae
 domain:google.al
