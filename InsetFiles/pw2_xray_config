@@ -3,6 +3,7 @@ config nodes 'myshunt'
 	option type 'Xray'
 	option protocol '_shunt'
 	option BasicDirect '_direct'
+	option RemoteDNS_Proxy 'policy_HK'
 	option Unbreak '_direct'
 	option CustomGroup 'nil'
 	option AD 'nil'
@@ -22,7 +23,7 @@ config nodes 'myshunt'
 	option OneDrive 'nil'
 	option GoogleAll 'policy_HK'
 	option BeBlocked 'policy_HK'
-	option QUIC 'nil'
+	option QUIC '_blackhole'
 	option UDP 'nil'
 	option default_node '_direct'
 	option domainStrategy 'IPOnDemand'
@@ -33,12 +34,39 @@ config shunt_rules 'BasicDirect'
 	option network 'tcp,udp'
 	option domain_list 'geosite:private'
 	option ip_list 'geoip:private
-114.114.114.114
-114.114.115.115
-223.5.5.5
-223.6.6.6
-119.29.29.29
-180.76.76.76
+223.5.5.5/32
+223.6.6.6/32
+119.29.29.29/32
+180.76.76.76/32
+114.114.114.114/32
+114.114.115.115/32
+1.12.12.12/32
+120.53.53.53/32
+'
+
+config shunt_rules 'RemoteDNS_Proxy'
+	option remarks '远程DNS代理'
+	option network 'tcp,udp'
+	option ip_list '8.8.4.4
+8.8.8.8
+1.1.1.1
+1.0.0.1
+1.1.1.2
+1.0.0.2
+1.1.1.3
+1.0.0.3
+208.67.222.222
+208.67.220.220
+9.9.9.9
+149.112.112.112
+2001:4860:4860::8888
+2001:4860:4860::8844
+2606:4700:4700::1111
+2606:4700:4700::1001
+2606:4700:4700::1112
+2606:4700:4700::1002
+2606:4700:4700::1113
+2606:4700:4700::1003
 '
 
 config shunt_rules 'Unbreak'
@@ -107,6 +135,17 @@ geosite:linkedin
 geosite:threads
 geosite:vk
 domain:x.com
+'
+	option ip_list '149.154.160.0/20
+91.108.4.0/22
+91.108.56.0/24
+109.239.140.0/24
+67.198.55.0/24
+2001:67c:4e8::/48
+2001:b28:f23c::/48
+2001:b28:f23d::/48
+2001:b28:f23f::/48
+2001:b28:f242::/48
 '
 
 config shunt_rules 'TikTok'
@@ -643,30 +682,6 @@ domain:d-id.com
 domain:v2ex.com
 domain:sspanel.net
 domain:auvpn.net
-'
-	option ip_list '149.154.160.0/20
-91.108.4.0/22
-91.108.56.0/24
-109.239.140.0/24
-67.198.55.0/24
-8.8.4.4
-8.8.8.8
-208.67.222.222
-208.67.220.220
-1.1.1.1
-1.1.1.2
-1.0.0.1
-9.9.9.9
-149.112.112.112
-2001:67c:4e8::/48
-2001:b28:f23c::/48
-2001:b28:f23d::/48
-2001:b28:f23f::/48
-2001:b28:f242::/48
-2001:4860:4860::8888
-2001:4860:4860::8844
-2606:4700:4700::1111
-2606:4700:4700::1001
 '
 
 config shunt_rules 'QUIC'
