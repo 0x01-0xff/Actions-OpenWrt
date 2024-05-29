@@ -41,8 +41,7 @@ config shunt_rules 'BasicDirect'
 114.114.114.114/32
 114.114.115.115/32
 1.12.12.12/32
-120.53.53.53/32
-'
+120.53.53.53/32'
 
 config shunt_rules 'RemoteDNS_Proxy'
 	option remarks '远程DNS代理'
@@ -66,15 +65,13 @@ config shunt_rules 'RemoteDNS_Proxy'
 2606:4700:4700::1112
 2606:4700:4700::1002
 2606:4700:4700::1113
-2606:4700:4700::1003
-'
+2606:4700:4700::1003'
 
 config shunt_rules 'Unbreak'
 	option remarks '直连修正'
 	option network 'tcp,udp'
 	option domain_list 'domain:blog.google
-geosite:google@cn
-'
+geosite:google@cn'
 
 config shunt_rules 'CustomGroup'
 	option remarks '自定义优先组'
@@ -134,8 +131,7 @@ geosite:discord
 geosite:linkedin
 geosite:threads
 geosite:vk
-domain:x.com
-'
+domain:x.com'
 	option ip_list '149.154.160.0/20
 91.108.4.0/22
 91.108.56.0/24
@@ -145,8 +141,7 @@ domain:x.com
 2001:b28:f23c::/48
 2001:b28:f23d::/48
 2001:b28:f23f::/48
-2001:b28:f242::/48
-'
+2001:b28:f242::/48'
 
 config shunt_rules 'TikTok'
 	option remarks 'TikTok'
@@ -169,8 +164,7 @@ domain:appletv.fr
 domain:appletv.wang
 domain:appletv4.cn
 domain:appletv4.com.cn
-domain:appletvapp.apple
-'
+domain:appletvapp.apple'
 
 config shunt_rules 'Netflix'
 	option remarks 'Netflix'
@@ -212,8 +206,7 @@ regexp:int[\w-\.]+iqiyi\.com
 domain:api.mob.app.letv.com
 domain:v.smtcdns.com
 domain:vv.video.qq.com
-domain:youku.com
-'
+domain:youku.com'
 
 config shunt_rules 'Streaming'
 	option remarks '国外视频媒体'
@@ -363,8 +356,7 @@ domain:firebaseio.com
 domain:jwpcdn.com
 domain:jwplayer.com
 domain:mobileanalytics.us-east-1.amazonaws.com
-full:music.youtube.com
-'
+full:music.youtube.com'
 	option ip_list 'geoip:netflix'
 
 config shunt_rules 'OneDrive'
@@ -669,8 +661,7 @@ domain:xn--ngstr-lra8j.com
 domain:xplr.co
 domain:zukunftswerkstatt.de
 regexp:(.+\.)?google\.[a-z]{2,3}(\.[a-z]{2})?$
-regexp:.+\.(and|chrome|dclk|gbiz|gle|gmail|goo|goog|google|guge|hangout|nexus|xn--flw351e|xn--qcka1pmc)$
-'
+regexp:.+\.(and|chrome|dclk|gbiz|gle|gmail|goo|goog|google|guge|hangout|nexus|xn--flw351e|xn--qcka1pmc)$'
 	option ip_list 'geoip:google'
 
 config shunt_rules 'BeBlocked'
@@ -681,8 +672,7 @@ domain:midjourney.com
 domain:d-id.com
 domain:v2ex.com
 domain:sspanel.net
-domain:auvpn.net
-'
+domain:auvpn.net'
 
 config shunt_rules 'QUIC'
 	option remarks 'QUIC'
