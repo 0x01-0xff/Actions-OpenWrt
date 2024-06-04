@@ -8,7 +8,6 @@ config nodes 'myshunt'
 	option CustomGroup 'nil'
 	option AD 'nil'
 	option BT '_direct'
-	option China 'nil'
 	option NeedUS 'policy_US'
 	option OpenAI 'policy_JP'
 	option Github 'policy_HK'
@@ -22,8 +21,9 @@ config nodes 'myshunt'
 	option Streaming 'policy_HK'
 	option OneDrive 'nil'
 	option GoogleAll 'policy_HK'
+	option China 'nil'
 	option BeBlocked 'policy_HK'
-	option QUIC 'nil'
+	option QUIC '_blackhole'
 	option UDP 'nil'
 	option default_node '_direct'
 	option domainStrategy 'IPOnDemand'
@@ -32,16 +32,15 @@ config nodes 'myshunt'
 config shunt_rules 'BasicDirect'
 	option remarks '局域网及国内DNS'
 	option network 'tcp,udp'
-	option domain_list 'geosite:private'
 	option ip_list 'geoip:private
-223.5.5.5/32
-223.6.6.6/32
-119.29.29.29/32
-180.76.76.76/32
-114.114.114.114/32
-114.114.115.115/32
-1.12.12.12/32
-120.53.53.53/32'
+114.114.114.114
+114.114.115.115
+223.5.5.5
+223.6.6.6
+119.29.29.29
+180.76.76.76
+120.53.53.53
+1.12.12.12'
 
 config shunt_rules 'RemoteDNS_Proxy'
 	option remarks '远程DNS代理'
@@ -70,8 +69,22 @@ config shunt_rules 'RemoteDNS_Proxy'
 config shunt_rules 'Unbreak'
 	option remarks '直连修正'
 	option network 'tcp,udp'
-	option domain_list 'domain:blog.google
-geosite:google@cn'
+	option domain_list 'geosite:google@cn
+blog.google
+apple.com
+microsoft.com
+dyndns.com
+steamcontent.com
+dl.steam.clngaa.com
+dl.steam.ksyna.com
+st.dl.bscstorage.net
+st.dl.eccdnx.com
+st.dl.pinyuncloud.com
+cdn.mileweb.cs.steampowered.com.8686c.com
+cdn-ws.content.steamchina.com
+cdn-qc.content.steamchina.com
+cdn-ali.content.steamchina.com
+epicgames-download1-1251447533.file.myqcloud.com'
 
 config shunt_rules 'CustomGroup'
 	option remarks '自定义优先组'
@@ -86,12 +99,6 @@ config shunt_rules 'BT'
 	option remarks 'BT下载'
 	option network 'tcp,udp'
 	option protocol 'bittorrent'
-
-config shunt_rules 'China'
-	option remarks '中国列表'
-	option network 'tcp,udp'
-	option domain_list 'geosite:cn'
-	option ip_list 'geoip:cn'
 	
 config shunt_rules 'NeedUS'
 	option remarks '指定美国'
@@ -132,16 +139,7 @@ geosite:linkedin
 geosite:threads
 geosite:vk
 domain:x.com'
-	option ip_list '149.154.160.0/20
-91.108.4.0/22
-91.108.56.0/24
-109.239.140.0/24
-67.198.55.0/24
-2001:67c:4e8::/48
-2001:b28:f23c::/48
-2001:b28:f23d::/48
-2001:b28:f23f::/48
-2001:b28:f242::/48'
+	option ip_list 'geoip:telegram'
 
 config shunt_rules 'TikTok'
 	option remarks 'TikTok'
@@ -247,115 +245,6 @@ geosite:niconico
 geosite:mudvod
 geosite:olevod
 geosite:pbs
-domain:tv.apple.com
-full:np-edge.itunes.apple.com
-full:play-edge.itunes.apple.com
-domain:appletv.com
-domain:appletv.fr
-domain:appletv.wang
-domain:appletv4.cn
-domain:appletv4.com.cn
-domain:appletvapp.apple
-domain:apple.news
-full:apple.comscoreresearch.com
-domain:appleenews.com
-domain:applenews.berlin
-domain:applenews.hamburg
-domain:applenews.tv
-domain:applenewsformat.com
-domain:c4assets.com
-domain:channel4.com
-full:atv-ps.amazon.com
-full:avodmp4s3ww-a.akamaihd.net
-full:d1v5ir2lpwr8os.cloudfront.net
-full:d1xfray82862hr.cloudfront.net
-full:d22qjgkvxw22r6.cloudfront.net
-full:d25xi40x97liuc.cloudfront.net
-full:d27xxe7juh1us6.cloudfront.net
-full:d3196yreox78o9.cloudfront.net
-full:dmqdd6hw24ucf.cloudfront.net
-full:ktpx.amazon.com
-domain:aiv-cdn.net
-domain:aiv-delivery.net
-domain:pv-cdn.net
-regexp:^https?:\/\/www\.amazon\.com\/(Amazon-Video|gp\/video)\/
-full:np-edge.itunes.apple.com
-full:play-edge.itunes.apple.com
-domain:tv.apple.com
-full:aod-dash-uk-live.akamaized.net
-full:aod-hls-uk-live.akamaized.net
-full:vod-dash-uk-live.akamaized.net
-full:vod-thumb-uk-live.akamaized.net
-full:d151l6v8er5bdm.cloudfront.net
-domain:d151l6v8er5bdm.cloudfront.net
-domain:d1sgwhnao7452x.cloudfront.net
-domain:deezer.com
-domain:dzcdn.net
-domain:adobedtm.com
-domain:bam.nr-data.net
-domain:bamgrid.com
-domain:braze.com
-domain:cdn.optimizely.com
-domain:cdn.registerdisney.go.com
-domain:cws.conviva.com
-domain:d9.flashtalking.com
-domain:dssott.com
-domain:execute-api.us-east-1.amazonaws.com
-domain:js-agent.newrelic.com
-full:bcbolt446c5271-a.akamaihd.net
-full:content.jwplatform.com
-full:edge.api.brightcove.com
-full:videos-f.jwpsrv.com
-domain:encoretvb.com
-domain:uplynk.com
-full:44wilhpljf.execute-api.ap-southeast-1.amazonaws.com
-full:bcbolthboa-a.akamaihd.net
-full:cf-images.ap-southeast-1.prod.boltdns.net
-full:dai3fd1oh325y.cloudfront.net
-domain:5itv.tv
-domain:ocnttv.com
-domain:cws-hulu.conviva.com
-domain:happyon.jp
-domain:hjholdings.jp
-domain:prod.hjholdings.tv
-domain:streaks.jp
-domain:yb.uncn.jp
-full:itvpnpmobile-a.akamaihd.net
-domain:itv.com
-domain:itvstatic.com
-domain:joox.com
-domain:japonx.com
-domain:japonx.net
-domain:japonx.tv
-domain:japonx.vip
-domain:japronx.com
-domain:japronx.net
-domain:japronx.tv
-domain:japronx.vip
-domain:kfs.io
-domain:channel5.com
-domain:my5.tv
-domain:dmc.nico
-domain:nicovideo.jp
-domain:nimg.jp
-domain:pandora.com
-domain:phncdn.com
-domain:phprcdn.com
-domain:qobuz.com
-domain:p-cdn.us
-domain:sndcdn.com
-domain:soundcloud.com
-domain:tidal-cms.s3.amazonaws.com
-domain:tidal.com
-domain:tidalhifi.com
-full:hamifans.emome.net
-domain:skyking.com.tw
-domain:bootstrapcdn.com
-domain:cognito-identity.us-east-1.amazonaws.com
-domain:firebaseio.com
-domain:jwpcdn.com
-domain:jwplayer.com
-domain:mobileanalytics.us-east-1.amazonaws.com
 full:music.youtube.com'
 	option ip_list 'geoip:netflix'
 
@@ -664,6 +553,13 @@ regexp:(.+\.)?google\.[a-z]{2,3}(\.[a-z]{2})?$
 regexp:.+\.(and|chrome|dclk|gbiz|gle|gmail|goo|goog|google|guge|hangout|nexus|xn--flw351e|xn--qcka1pmc)$'
 	option ip_list 'geoip:google'
 
+config shunt_rules 'China'
+	option remarks '中国列表'
+	option network 'tcp,udp'
+	option domain_list 'geosite:cn
+geosite:private'
+	option ip_list 'geoip:cn'
+
 config shunt_rules 'BeBlocked'
 	option remarks 'All Blocked GFWList'
 	option network 'tcp,udp'
@@ -672,7 +568,8 @@ domain:midjourney.com
 domain:d-id.com
 domain:v2ex.com
 domain:sspanel.net
-domain:auvpn.net'
+domain:auvpn.net
+domain:xn--8stx8olrwkucjq3b.com'
 
 config shunt_rules 'QUIC'
 	option remarks 'QUIC'
